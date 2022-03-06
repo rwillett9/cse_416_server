@@ -95,4 +95,14 @@ public class MessageController {
     void deleteMessage(@PathVariable Long id) {
         repository.deleteById(id);
     }
+
+    /**
+     * HTTP GET request
+     * @param name name of Message to be found
+     * @return all Messages with specified name
+     */
+    @GetMapping("/messages/name/{name}")
+    List<Message> byName(@PathVariable String name) {
+        return repository.findByName(name);
+    }
 }

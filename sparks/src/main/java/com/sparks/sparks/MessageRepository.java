@@ -1,5 +1,7 @@
 package com.sparks.sparks;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -11,5 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * We made sure to specify domain type as Message and id type as Long
  */
 interface MessageRepository extends JpaRepository<Message, Long> {
-
+    // get Message by name field
+    List<Message> findByName(String name);
 }

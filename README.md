@@ -54,3 +54,7 @@ Returns: Message that has now been updated, or new Message if Message with id di
 <h2>DELETE <code>localhost:8080/messages/{id}</code></h2>
 
 Returns: nothing
+
+<h2>GET <code>localhost:8080/messages/name/{name}</code></h2>
+
+Returns: all Message Objects with the specified name
