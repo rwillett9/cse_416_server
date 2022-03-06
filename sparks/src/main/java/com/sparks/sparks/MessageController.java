@@ -30,6 +30,7 @@ public class MessageController {
      * HTTP GET request
      * @return all Message Objects in the MessageRepository
      */
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/messages")
     List<Message> all() {
         List<Message> messageList = repository.findAll();
