@@ -2,6 +2,7 @@ package com.sparks.sparks;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @RestController indicates that the data returned by each method will be written straight into the response 
  * body instead of rendering a template
+ * @CrossOrigin allows the specified url to make cross origin requests
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:8080")
 public class MessageController {
     private final MessageRepository repository;
 
