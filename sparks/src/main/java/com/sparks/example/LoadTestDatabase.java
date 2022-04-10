@@ -1,4 +1,4 @@
-package com.sparks.sparks;
+package com.sparks.example;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

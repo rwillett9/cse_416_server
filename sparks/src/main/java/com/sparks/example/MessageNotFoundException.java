@@ -1,4 +1,4 @@
-package com.sparks.sparks;
+package com.sparks.example;
 
 // initialize custom Exception for when Message with given id does not exist
 public class MessageNotFoundException extends RuntimeException{
