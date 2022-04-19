@@ -1,10 +1,10 @@
-package com.sparks.demo;
+package com.example.sparks;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoApplicationTests {
+class SparksApplicationTests {
 
 	@Test
 	void contextLoads() {

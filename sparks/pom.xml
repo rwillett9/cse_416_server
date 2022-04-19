@@ -8,11 +8,11 @@
 		<version>2.6.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.sparks</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>sparks</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Sparks project for Spring Boot</description>
+	<name>sparks</name>
+	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -27,8 +27,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>mssql-jdbc</artifactId>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
