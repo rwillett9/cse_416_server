@@ -14,10 +14,6 @@ spring.datasource.url=jdbc:mysql://{databaseURL}/{databasename}
 spring.datasource.username={username}
 
 spring.datasource.password={password}
-
-# spring.datasource.driver-class-name =com.mysql.jdbc.Driver
-
-#spring.jpa.show-sql: true
 </code>
 
 <h2>You must fill in the <code>databaseURL</code>, <code>databasename</code>, <code>username</code>, and <code>password</code>

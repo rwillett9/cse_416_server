@@ -1,5 +1,7 @@
 package com.example.sparks.Entities;
 
+import java.util.List;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +26,7 @@ public class SeatShareData {
 
     private double biasAt50;
     @Embedded
-    private Coordinates[] democratData;
+    private List<Coordinates> democratData;
     // private Coordinates republicanData;
     private double responsiveness;
     private double symmetry;
@@ -32,7 +34,7 @@ public class SeatShareData {
     // getters
     public Long getId() { return this.id; }
     public double getBiasAt50() { return this.biasAt50; }
-    public Coordinates[] getDemocratData() { return this.democratData; }
+    public List<Coordinates> getDemocratData() { return this.democratData; }
     // public Coordinates getRepublicanData() { return this.republicanData; }
     public double getReponsiveness() { return this.responsiveness; }
     public double getSymmetry() { return this.symmetry; }
@@ -40,7 +42,7 @@ public class SeatShareData {
     // setters
     public void setId(Long id) { this.id = id; }
     public void setBiasAt50(double biasAt50) { this.biasAt50 = biasAt50; }
-    public void setDemocratData(Coordinates[] democratData) { this.democratData = democratData; }
+    public void setDemocratData(List<Coordinates> democratData) { this.democratData = democratData; }
     // public void setRepublicanData(Coordinates republicanData) { this.republicanData = republicanData; }
     public void setResponsiveness(double responsiveness) { this.responsiveness = responsiveness; }
     public void setSymmetry(double symmetry) { this.symmetry = symmetry; }
