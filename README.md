@@ -1,3 +1,30 @@
+<h1>Setup</h1>
+
+<h2>First, you must complete the necessary fields in the 
+<code>sparks/src/main/resources/application.properties file</code>
+
+The file should look like the following:
+</h2>
+
+<code>
+spring.jpa.hibernate.ddl-auto=create
+
+spring.datasource.url=jdbc:mysql://{databaseURL}/{databasename}
+
+spring.datasource.username={username}
+
+spring.datasource.password={password}
+
+# spring.datasource.driver-class-name =com.mysql.jdbc.Driver
+
+#spring.jpa.show-sql: true
+</code>
+
+<h2>You must fill in the <code>databaseURL</code>, <code>databasename</code>, <code>username</code>, and <code>password</code>
+fields.
+
+MAKE SURE YOU REMOVE THE CURLY BRACKETS ("{" and "}")
+
 <h1>Start Server</h1>
 
 <h2>To start server, navigate to sparks folder and run:</h2>
@@ -14,47 +41,3 @@ For testing visit the following link and scroll down to the section with sample 
 
 https://spring.io/guides/tutorials/rest/
 
-<h1>API Calls</h1>
-
-Make sure <code>localhost:8080</code> is available for the server to run on.
-
-<h2>Message Object</h2>
-
-Message: {
-
-    id Long: unique id for identification
-
-    name String: representation of Message
-
-    message String: message
-
-    timesAccessed int: total times this message was retrieved
-}
-
-<h2>GET <code>localhost:8080/messages</code></h2>
-
-Returns: all Messages in the dummydb
-
-<h2>POST <code>localhost:8080/messages</code></h2>
-
-Body: Message Object
-
-Returns: new Message that is now saved in dummydb
-
-<h2>GET <code>localhost:8080/messages/{id}</code></h2>
-
-Returns: Message with specified id if it exists, otherwise 404 error
-
-<h2>PUT <code>localhost:8080/messages/{id}</code></h2>
-
-Body: Message Object
-
-Returns: Message that has now been updated, or new Message if Message with id didn't already exist
-
-<h2>DELETE <code>localhost:8080/messages/{id}</code></h2>
-
-Returns: nothing
-
-<h2>GET <code>localhost:8080/messages/name/{name}</code></h2>
-
-Returns: all Message Objects with the specified name
