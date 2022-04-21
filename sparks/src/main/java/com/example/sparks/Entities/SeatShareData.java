@@ -1,15 +1,18 @@
 package com.example.sparks.Entities;
 
-import java.util.List;
-
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 
-import com.example.sparks.Embeddables.Coordinates;
+import com.example.sparks.Embeddables.Coordinate;
 
+import java.util.List;
 // import org.springframework.data.util.Pair;
 
 /**
@@ -22,28 +25,37 @@ import com.example.sparks.Embeddables.Coordinates;
 public class SeatShareData {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "seat_share_data_id")
     private Long id;
 
     private double biasAt50;
+
     @Embedded
-    private List<Coordinates> democratData;
-    // private Coordinates republicanData;
+    @ElementCollection
+    @CollectionTable(name = "democrat_data", joinColumns = @JoinColumn(name = "seat_share_data_id"))
+    private List<Coordinate> democratData;
+
+    @Embedded
+    @ElementCollection
+    @CollectionTable(name = "republican_data", joinColumns = @JoinColumn(name = "seat_share_data_id"))
+    private List<Coordinate> republicanData;
+
     private double responsiveness;
     private double symmetry;
 
     // getters
     public Long getId() { return this.id; }
     public double getBiasAt50() { return this.biasAt50; }
-    public List<Coordinates> getDemocratData() { return this.democratData; }
-    // public Coordinates getRepublicanData() { return this.republicanData; }
+    public List<Coordinate> getDemocratData() { return this.democratData; }
+    public List<Coordinate> getRepublicanData() { return this.republicanData; }
     public double getReponsiveness() { return this.responsiveness; }
     public double getSymmetry() { return this.symmetry; }
 
     // setters
     public void setId(Long id) { this.id = id; }
     public void setBiasAt50(double biasAt50) { this.biasAt50 = biasAt50; }
-    public void setDemocratData(List<Coordinates> democratData) { this.democratData = democratData; }
-    // public void setRepublicanData(Coordinates republicanData) { this.republicanData = republicanData; }
+    public void setDemocratData(List<Coordinate> democratData) { this.democratData = democratData; }
+    public void setRepublicanData(List<Coordinate> republicanData) { this.republicanData = republicanData; }
     public void setResponsiveness(double responsiveness) { this.responsiveness = responsiveness; }
     public void setSymmetry(double symmetry) { this.symmetry = symmetry; }
 }

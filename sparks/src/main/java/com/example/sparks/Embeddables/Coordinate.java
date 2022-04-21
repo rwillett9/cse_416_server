@@ -3,7 +3,7 @@ package com.example.sparks.Embeddables;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Coordinates {
+public class Coordinate {
   private int x;
   private int y;
 
