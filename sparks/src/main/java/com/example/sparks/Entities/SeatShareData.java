@@ -43,19 +43,88 @@ public class SeatShareData {
     private double responsiveness;
     private double symmetry;
 
-    // getters
-    public Long getId() { return this.id; }
-    public double getBiasAt50() { return this.biasAt50; }
-    public List<Coordinate> getDemocratData() { return this.democratData; }
-    public List<Coordinate> getRepublicanData() { return this.republicanData; }
-    public double getReponsiveness() { return this.responsiveness; }
-    public double getSymmetry() { return this.symmetry; }
+    /**
+     * @return Long return the id
+     */
+    public Long getId() {
+        return id;
+    }
 
-    // setters
-    public void setId(Long id) { this.id = id; }
-    public void setBiasAt50(double biasAt50) { this.biasAt50 = biasAt50; }
-    public void setDemocratData(List<Coordinate> democratData) { this.democratData = democratData; }
-    public void setRepublicanData(List<Coordinate> republicanData) { this.republicanData = republicanData; }
-    public void setResponsiveness(double responsiveness) { this.responsiveness = responsiveness; }
-    public void setSymmetry(double symmetry) { this.symmetry = symmetry; }
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return double return the biasAt50
+     */
+    public double getBiasAt50() {
+        return biasAt50;
+    }
+
+    /**
+     * @param biasAt50 the biasAt50 to set
+     */
+    public void setBiasAt50(double biasAt50) {
+        this.biasAt50 = biasAt50;
+    }
+
+    /**
+     * @return List<Coordinate> return the democratData
+     */
+    public List<Coordinate> getDemocratData() {
+        return democratData;
+    }
+
+    /**
+     * @param democratData the democratData to set
+     */
+    public void setDemocratData(List<Coordinate> democratData) {
+        this.democratData = democratData;
+    }
+
+    /**
+     * @return List<Coordinate> return the republicanData
+     */
+    public List<Coordinate> getRepublicanData() {
+        return republicanData;
+    }
+
+    /**
+     * @param republicanData the republicanData to set
+     */
+    public void setRepublicanData(List<Coordinate> republicanData) {
+        this.republicanData = republicanData;
+    }
+
+    /**
+     * @return double return the responsiveness
+     */
+    public double getResponsiveness() {
+        return responsiveness;
+    }
+
+    /**
+     * @param responsiveness the responsiveness to set
+     */
+    public void setResponsiveness(double responsiveness) {
+        this.responsiveness = responsiveness;
+    }
+
+    /**
+     * @return double return the symmetry
+     */
+    public double getSymmetry() {
+        return symmetry;
+    }
+
+    /**
+     * @param symmetry the symmetry to set
+     */
+    public void setSymmetry(double symmetry) {
+        this.symmetry = symmetry;
+    }
+
 }
