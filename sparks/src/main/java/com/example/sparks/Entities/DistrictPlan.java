@@ -289,4 +289,32 @@ public class DistrictPlan {
         this.democratDistrictIds = democratDistrictIds;
     }
 
+    /**
+     * @return a DistrictPlanMetrics Object
+     */
+    public DistrictPlanMetrics createMetrics() {
+        DistrictPlanMetrics metrics = new DistrictPlanMetrics();
+        metrics.setCompactness(this.getCompactness());
+        metrics.setCompetitiveDistrictIds(this.getCompetitiveDistrictIds());
+        metrics.setDemocratDistrictIds(this.getDemocratDistrictIds());
+        metrics.setMeanPopulationDeviation(this.getMeanPopulationDeviation());
+        metrics.setNumMinorityMajorityDistricts(this.getNumMinorityMajorityDistricts());
+        metrics.setRepublicanDistrictIds(this.getRepublicanDistrictIds());
+        metrics.setName(this.getName());
+        return metrics;
+    }
+
+    /**
+     * @return a SeatShareData Object
+     */
+    public SeatShareData createSeatShare() {
+        SeatShareData seatShareData = new SeatShareData();
+        seatShareData.setBiasAt50(this.getSeatShareBiasAt50());
+        seatShareData.setDemocratData(this.getSeatShareDemocratData());
+        seatShareData.setRepublicanData(this.getSeatShareRepublicanData());
+        seatShareData.setResponsiveness(this.getSeatShareResponsiveness());
+        seatShareData.setSymmetry(this.getSeatShareSymmetry());
+        return seatShareData;
+    }
+
 }

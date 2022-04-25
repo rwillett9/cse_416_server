@@ -1,22 +1,25 @@
 package com.example.sparks.Entities;
 
+import java.util.List;
 import java.util.Map;
 
 public class StateSummary {
-    private Map<Long, String> districtPlanIdToNameMap;
+    // @TODO
+    // private Map<Long, String> districtPlanIdToNameMap;
+    private List<DistrictPlanMetrics> districtPlanMetrics;
 
     /**
-     * @return Map<Long, String> return the districtPlanIdToNameMap
+     * @return List<DistrictPlanMetrics> return the districtPlanMetrics
      */
-    public Map<Long, String> getDistrictPlanIdToNameMap() {
-        return districtPlanIdToNameMap;
+    public List<DistrictPlanMetrics> getDistrictPlanMetrics() {
+        return districtPlanMetrics;
     }
 
     /**
-     * @param districtPlanIdToNameMap the districtPlanIdToNameMap to set
+     * @param districtPlanMetrics the districtPlanMetrics to set
      */
-    public void setDistrictPlanIdToNameMap(Map<Long, String> districtPlanIdToNameMap) {
-        this.districtPlanIdToNameMap = districtPlanIdToNameMap;
+    public void setDistrictPlanMetrics(List<DistrictPlanMetrics> districtPlanMetrics) {
+        this.districtPlanMetrics = districtPlanMetrics;
     }
 
 }

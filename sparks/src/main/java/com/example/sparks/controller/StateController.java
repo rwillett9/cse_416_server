@@ -1,5 +1,6 @@
 package com.example.sparks.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,18 +53,19 @@ public class StateController {
         return "Saved Test State";
     }
 
-    // @TODO: should return StateSummary intstead of entire state
+    // @TODO clean this up and document
     @GetMapping(path="/{stateCode}")
     public @ResponseBody StateSummary getStateByCode(@PathVariable String stateCode) {
         State state = stateRepository.findByStateCode(stateCode).get(0);
 
         // populate StateSummary Object to be returned
         StateSummary summary = new StateSummary();
-        HashMap<Long, String> map = new HashMap<Long, String>();
+        List<DistrictPlanMetrics> metricList = new ArrayList<DistrictPlanMetrics>();
         for (DistrictPlan plan: state.getDistrictPlans()) {
-            map.put(plan.getId(), plan.getName());
+            // map.put(plan.getId(), plan.getName());
+            metricList.add(plan.createMetrics());
         }
-        summary.setDistrictPlanIdToNameMap(map);
+        summary.setDistrictPlanMetrics(metricList);
 
         return summary;
     }
@@ -91,16 +93,8 @@ public class StateController {
         // List<State> states = stateRepository.findByStateCode(values.getFirst("stateCode"));
         State state = stateRepository.findByStateCode(values.getFirst("stateCode")).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
-        
-        // populate SeatShareData Object to be returned
-        SeatShareData seatShareData = new SeatShareData();
-        seatShareData.setBiasAt50(districtPlan.getSeatShareBiasAt50());
-        seatShareData.setDemocratData(districtPlan.getSeatShareDemocratData());
-        seatShareData.setRepublicanData(districtPlan.getSeatShareRepublicanData());
-        seatShareData.setResponsiveness(districtPlan.getSeatShareResponsiveness());
-        seatShareData.setSymmetry(districtPlan.getSeatShareSymmetry());
 
-        return seatShareData;
+        return districtPlan.createSeatShare();
     }
 
     // @TODO: DISTRICT ENDPOINT
@@ -112,17 +106,7 @@ public class StateController {
         State state = stateRepository.findByStateCode(values.getFirst("stateCode")).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
 
-        // populate DistrictPlanMetrics Object to be returned
-        DistrictPlanMetrics metrics = new DistrictPlanMetrics();
-        metrics.setCompactness(districtPlan.getCompactness());
-        metrics.setCompetitiveDistrictIds(districtPlan.getCompetitiveDistrictIds());
-        metrics.setDemocratDistrictIds(districtPlan.getDemocratDistrictIds());
-        metrics.setMeanPopulationDeviation(districtPlan.getMeanPopulationDeviation());
-        metrics.setNumMinorityMajorityDistricts(districtPlan.getNumMinorityMajorityDistricts());
-        metrics.setRepublicanDistrictIds(districtPlan.getRepublicanDistrictIds());
-        metrics.setName(districtPlan.getName());
-
-        return metrics;
+        return districtPlan.createMetrics();
     }
 
 }
