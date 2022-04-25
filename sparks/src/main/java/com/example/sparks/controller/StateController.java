@@ -1,11 +1,13 @@
 package com.example.sparks.controller;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.example.sparks.Entities.DistrictPlan;
 import com.example.sparks.Entities.DistrictPlanMetrics;
 import com.example.sparks.Entities.SeatShareData;
 import com.example.sparks.Entities.State;
+import com.example.sparks.Entities.StateSummary;
 import com.example.sparks.Repositories.StateRepository;
 
 import org.json.JSONObject;
@@ -51,11 +53,18 @@ public class StateController {
 
     // @TODO: should return StateSummary intstead of entire state
     @GetMapping(path="/{stateCode}")
-    public @ResponseBody State getStateByCode(@PathVariable String stateCode) {
-        List<State> states = stateRepository.findByStateCode(stateCode);
+    public @ResponseBody StateSummary getStateByCode(@PathVariable String stateCode) {
+        State state = stateRepository.findByStateCode(stateCode).get(0);
 
-        // stateCode is a unique field so just return 1 state object
-        return states.get(0);
+        // populate StateSummary Object to be returned
+        StateSummary summary = new StateSummary();
+        HashMap<Long, String> map = new HashMap<Long, String>();
+        for (DistrictPlan plan: state.getDistrictPlans()) {
+            map.put(plan.getId(), plan.getName());
+        }
+        summary.setDistrictPlanIdToNameMap(map);
+
+        return summary;
     }
 
     // @TODO: delete this
@@ -73,7 +82,7 @@ public class StateController {
     }
 
 
-    // @TODO: DISTRICT ENDPOINTS
+    // @TODO: DISTRICT ENDPOINT
     // get seat share data using statecode and district plan id
     @GetMapping(path="/district/seat-share/{districtPlanId}")
     public @ResponseBody SeatShareData getSeatShareData(@RequestBody String stateCode, @PathVariable Long districtPlanId) {
@@ -91,6 +100,7 @@ public class StateController {
         return seatShareData;
     }
 
+    // @TODO: DISTRICT ENDPOINT
     // get district stats by statecode and district plan id
     @GetMapping(path="/district/{districtPlanId}")
     public @ResponseBody DistrictPlanMetrics getDistrictSummary(@RequestBody String stateCode, @PathVariable Long districtPlanId) {
