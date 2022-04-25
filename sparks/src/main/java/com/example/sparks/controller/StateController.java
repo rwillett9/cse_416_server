@@ -73,9 +73,9 @@ public class StateController {
 
     // @TODO: delete this
     @GetMapping(path="/session")
-    public @ResponseBody String getStateFromSession(@RequestBody MultiValueMap<String, String> values) {
+    public @ResponseBody String getStateFromSession() {
 
-        return values.getFirst("stateCode");
+        return null;
     }
 
     // @TODO: maybe returns geojson with statecode?
@@ -88,11 +88,11 @@ public class StateController {
 
     // @TODO: DISTRICT ENDPOINT
     // get seat share data using statecode and district plan id
-    @GetMapping(path="/district/seat-share/{districtPlanId}")
+    @GetMapping(path="/district/seat-share/{stateCode}/{districtPlanId}")
     public @ResponseBody SeatShareData getSeatShareData(@PathVariable Long districtPlanId, 
-                                                    @RequestBody MultiValueMap<String, String> values) {
+                                                        @PathVariable String stateCode) {
         // List<State> states = stateRepository.findByStateCode(values.getFirst("stateCode"));
-        State state = stateRepository.findByStateCode(values.getFirst("stateCode")).get(0);
+        State state = stateRepository.findByStateCode(stateCode).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
 
         return districtPlan.createSeatShare();
@@ -100,11 +100,11 @@ public class StateController {
 
     // @TODO: DISTRICT ENDPOINT
     // get district stats by statecode and district plan id
-    @GetMapping(path="/district/{districtPlanId}")
+    @GetMapping(path="/district/{stateCode}/{districtPlanId}")
     public @ResponseBody DistrictPlanMetrics getDistrictSummary(@PathVariable Long districtPlanId, 
-                                                                @RequestBody MultiValueMap<String, String> values) {
+                                                                @PathVariable String stateCode) {
         // @TODO
-        State state = stateRepository.findByStateCode(values.getFirst("stateCode")).get(0);
+        State state = stateRepository.findByStateCode(stateCode).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
 
         return districtPlan.createMetrics();
