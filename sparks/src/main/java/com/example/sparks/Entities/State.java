@@ -24,7 +24,7 @@ public class State {
     private String geoJson;
 
     @OneToMany
-    @JoinColumn(name = "state_code")
+    @JoinColumn(name = "state_id")
     private List<DistrictPlan> districtPlans;
 
     private String stateCode;

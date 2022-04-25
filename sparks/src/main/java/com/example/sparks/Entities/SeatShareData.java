@@ -5,6 +5,8 @@ import com.example.sparks.Embeddables.Coordinate;
 import java.util.List;
 // import org.springframework.data.util.Pair;
 
+// import javax.persistence.Entity;
+
 // @TODO: this might not need to be an Entity? only needed as a return value for endpoints
 // this data gets stored in district_plan table in mysql, don't need another table for this
 /**

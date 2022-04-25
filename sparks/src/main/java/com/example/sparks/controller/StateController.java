@@ -13,6 +13,7 @@ import com.example.sparks.Repositories.StateRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,8 +54,8 @@ public class StateController {
 
     // @TODO: should return StateSummary intstead of entire state
     @GetMapping(path="/{stateCode}")
-    public @ResponseBody StateSummary getStateByCode(@PathVariable String stateCode) {
-        State state = stateRepository.findByStateCode(stateCode).get(0);
+    public @ResponseBody StateSummary getStateByCode(@PathVariable MultiValueMap<String, String> values) {
+        State state = stateRepository.findByStateCode(values.getFirst("stateCode")).get(0);
 
         // populate StateSummary Object to be returned
         StateSummary summary = new StateSummary();
@@ -69,9 +70,9 @@ public class StateController {
 
     // @TODO: delete this
     @GetMapping(path="/session")
-    public @ResponseBody String getStateFromSession(@RequestBody String stateCode) {
+    public @ResponseBody String getStateFromSession(@RequestBody MultiValueMap<String, String> values) {
 
-        return stateCode;
+        return values.getFirst("stateCode");
     }
 
     // @TODO: maybe returns geojson with statecode?
@@ -85,8 +86,10 @@ public class StateController {
     // @TODO: DISTRICT ENDPOINT
     // get seat share data using statecode and district plan id
     @GetMapping(path="/district/seat-share/{districtPlanId}")
-    public @ResponseBody SeatShareData getSeatShareData(@RequestBody String stateCode, @PathVariable Long districtPlanId) {
-        State state = stateRepository.findByStateCode(stateCode).get(0);
+    public @ResponseBody SeatShareData getSeatShareData(@PathVariable Long districtPlanId, 
+                                                    @RequestBody MultiValueMap<String, String> values) {
+        // List<State> states = stateRepository.findByStateCode(values.getFirst("stateCode"));
+        State state = stateRepository.findByStateCode(values.getFirst("stateCode")).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
         
         // populate SeatShareData Object to be returned
@@ -94,7 +97,7 @@ public class StateController {
         seatShareData.setBiasAt50(districtPlan.getSeatShareBiasAt50());
         seatShareData.setDemocratData(districtPlan.getSeatShareDemocratData());
         seatShareData.setRepublicanData(districtPlan.getSeatShareRepublicanData());
-        seatShareData.setResponsiveness(districtPlan.getSeatShareResponsivness());
+        seatShareData.setResponsiveness(districtPlan.getSeatShareResponsiveness());
         seatShareData.setSymmetry(districtPlan.getSeatShareSymmetry());
 
         return seatShareData;
@@ -103,9 +106,10 @@ public class StateController {
     // @TODO: DISTRICT ENDPOINT
     // get district stats by statecode and district plan id
     @GetMapping(path="/district/{districtPlanId}")
-    public @ResponseBody DistrictPlanMetrics getDistrictSummary(@RequestBody String stateCode, @PathVariable Long districtPlanId) {
+    public @ResponseBody DistrictPlanMetrics getDistrictSummary(@PathVariable Long districtPlanId, 
+                                                                @RequestBody MultiValueMap<String, String> values) {
         // @TODO
-        State state = stateRepository.findByStateCode(stateCode).get(0);
+        State state = stateRepository.findByStateCode(values.getFirst("stateCode")).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
 
         // populate DistrictPlanMetrics Object to be returned

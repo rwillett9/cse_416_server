@@ -4,14 +4,14 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Coordinate {
-  private int x;
-  private int y;
+  private double x;
+  private double y;
 
   // setters
-  public void setX(int x) { this.x = x; }
-  public void setY(int y) { this.y = y; }
+  public void setX(double x) { this.x = x; }
+  public void setY(double y) { this.y = y; }
   
   // getters
-  public int getX() { return this.x; }
-  public int getY() { return this.y; }
+  public double getX() { return this.x; }
+  public double getY() { return this.y; }
 }

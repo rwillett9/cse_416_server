@@ -36,6 +36,8 @@ public class DistrictPlan {
     
     // @TODO: setup districts
 
+
+
     private double efficiencyGap;
     private double fairness;
     private double meanPopulationDeviation;
@@ -46,7 +48,7 @@ public class DistrictPlan {
     @ElementCollection
     @CollectionTable(name = "republican_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Long> republicanDistrictIds;
-    
+
     @Embedded
     @ElementCollection
     @CollectionTable(name = "district_plan_dem_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
@@ -59,7 +61,7 @@ public class DistrictPlan {
 
     private double seatShareBiasAt50;
     private double seatShareSymmetry;
-    private double seatShareResponsivness;
+    private double seatShareResponsiveness;
 
     /**
      * @return Long return the id
@@ -230,17 +232,17 @@ public class DistrictPlan {
     }
 
     /**
-     * @return double return the seatShareResponsivness
+     * @return double return the seatShareResponsiveness
      */
-    public double getSeatShareResponsivness() {
-        return seatShareResponsivness;
+    public double getSeatShareResponsiveness() {
+        return seatShareResponsiveness;
     }
 
     /**
-     * @param seatShareResponsivness the seatShareResponsivness to set
+     * @param seatShareResponsiveness the seatShareResponsiveness to set
      */
-    public void setSeatShareResponsivness(double seatShareResponsivness) {
-        this.seatShareResponsivness = seatShareResponsivness;
+    public void setSeatShareResponsivness(double seatShareResponsiveness) {
+        this.seatShareResponsiveness = seatShareResponsiveness;
     }
 
 
