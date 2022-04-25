@@ -26,13 +26,9 @@ public class State {
     @Column(columnDefinition = "json")
     private String geoJson;
 
-    // @OneToMany
-    // @JoinColumn(name = "state_code")
-    // private List<DistrictPlan> districtPlans;
-
-    @ElementCollection
-    @CollectionTable(name = "plan_name", joinColumns = @JoinColumn(name = "state_id"))
-    private List<String> districtPlanNames;
+    @OneToMany
+    @JoinColumn(name = "state_code")
+    private List<DistrictPlan> districtPlans;
 
     private String stateCode;
 
@@ -80,17 +76,28 @@ public class State {
 
 
     /**
-     * @return List<String> return the districtPlanNames
+     * @return List<DistrictPlan> return the districtPlans
      */
-    public List<String> getDistrictPlanNames() {
-        return districtPlanNames;
+    public List<DistrictPlan> getDistrictPlans() {
+        return districtPlans;
     }
 
     /**
-     * @param districtPlanNames the districtPlanNames to set
+     * @param districtPlans the districtPlans to set
      */
-    public void setDistrictPlanNames(List<String> districtPlanNames) {
-        this.districtPlanNames = districtPlanNames;
+    public void setDistrictPlans(List<DistrictPlan> districtPlans) {
+        this.districtPlans = districtPlans;
+    }
+
+    /**
+     * @param districtPlanId the id of the plan to retrieve
+     * @return DistrictPlan with matching id if it exists, otherwise null
+     */
+    public DistrictPlan getDistrictPlanById(Long districtPlanId) {
+        return districtPlans.stream()
+        .filter(plan -> districtPlanId.equals(plan.getId()))
+        .findAny()
+        .orElse(null);
     }
 
 }

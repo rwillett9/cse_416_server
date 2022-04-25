@@ -1,43 +1,34 @@
 package com.example.sparks.Entities;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-
 import com.example.sparks.Embeddables.Coordinate;
 
 import java.util.List;
 // import org.springframework.data.util.Pair;
 
+// @TODO: this might not need to be an Entity? only needed as a return value for endpoints
+// this data gets stored in district_plan table in mysql, don't need another table for this
 /**
- * For storing data to create the Seat Share Curve.
+ * For sending data to create the Seat Share Curve.
  * we require x and y values to plot for both democrats and republicans,
- * bias at 50%,
- * responsiveness and symmetry
+ * bias at 50%, responsiveness and symmetry
  */
-@Entity
+// @Entity
 public class SeatShareData {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "seat_share_data_id")
+    // @Id
+    // @GeneratedValue(strategy=GenerationType.AUTO)
+    // @Column(name = "seat_share_data_id")
     private Long id;
 
     private double biasAt50;
 
-    @Embedded
-    @ElementCollection
-    @CollectionTable(name = "democrat_data", joinColumns = @JoinColumn(name = "seat_share_data_id"))
+    // @Embedded
+    // @ElementCollection
+    // @CollectionTable(name = "democrat_data", joinColumns = @JoinColumn(name = "seat_share_data_id"))
     private List<Coordinate> democratData;
 
-    @Embedded
-    @ElementCollection
-    @CollectionTable(name = "republican_data", joinColumns = @JoinColumn(name = "seat_share_data_id"))
+    // @Embedded
+    // @ElementCollection
+    // @CollectionTable(name = "republican_data", joinColumns = @JoinColumn(name = "seat_share_data_id"))
     private List<Coordinate> republicanData;
 
     private double responsiveness;

@@ -26,12 +26,10 @@ public class DistrictPlan {
 
     private double compactness;
 
-    // @TODO
     @ElementCollection
     @CollectionTable(name = "competitive_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Long> competitiveDistrictIds;
 
-    // @TODO
     @ElementCollection
     @CollectionTable(name = "democrat_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Long> democratDistrictIds;
