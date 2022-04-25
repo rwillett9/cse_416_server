@@ -2,13 +2,16 @@ package com.example.sparks.Entities;
 
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * This Entity will store all the data for each state, including geojson data(?)
@@ -23,9 +26,13 @@ public class State {
     @Column(columnDefinition = "json")
     private String geoJson;
 
-    @OneToMany
-    @JoinColumn(name = "state_code")
-    private List<DistrictPlan> districtPlans;
+    // @OneToMany
+    // @JoinColumn(name = "state_code")
+    // private List<DistrictPlan> districtPlans;
+
+    @ElementCollection
+    @CollectionTable(name = "plan_name", joinColumns = @JoinColumn(name = "state_id"))
+    private List<String> districtPlanNames;
 
     private String stateCode;
 
@@ -73,17 +80,17 @@ public class State {
 
 
     /**
-     * @return List<DistrictPlan> return the districtPlans
+     * @return List<String> return the districtPlanNames
      */
-    public List<DistrictPlan> getDistrictPlans() {
-        return districtPlans;
+    public List<String> getDistrictPlanNames() {
+        return districtPlanNames;
     }
 
     /**
-     * @param districtPlans the districtPlans to set
+     * @param districtPlanNames the districtPlanNames to set
      */
-    public void setDistrictPlans(List<DistrictPlan> districtPlans) {
-        this.districtPlans = districtPlans;
+    public void setDistrictPlanNames(List<String> districtPlanNames) {
+        this.districtPlanNames = districtPlanNames;
     }
 
 }
