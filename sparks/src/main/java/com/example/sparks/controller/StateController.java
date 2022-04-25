@@ -54,8 +54,8 @@ public class StateController {
 
     // @TODO: should return StateSummary intstead of entire state
     @GetMapping(path="/{stateCode}")
-    public @ResponseBody StateSummary getStateByCode(@PathVariable MultiValueMap<String, String> values) {
-        State state = stateRepository.findByStateCode(values.getFirst("stateCode")).get(0);
+    public @ResponseBody StateSummary getStateByCode(@PathVariable String stateCode) {
+        State state = stateRepository.findByStateCode(stateCode).get(0);
 
         // populate StateSummary Object to be returned
         StateSummary summary = new StateSummary();
