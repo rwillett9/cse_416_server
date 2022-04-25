@@ -3,6 +3,7 @@ package com.example.sparks.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.example.sparks.Entities.DistrictPlan;
 import com.example.sparks.Entities.DistrictPlanMetrics;
@@ -60,12 +61,12 @@ public class StateController {
 
         // populate StateSummary Object to be returned
         StateSummary summary = new StateSummary();
-        List<DistrictPlanMetrics> metricList = new ArrayList<DistrictPlanMetrics>();
+        Map<Long, DistrictPlanMetrics> metricMap = new HashMap<Long, DistrictPlanMetrics>();
         for (DistrictPlan plan: state.getDistrictPlans()) {
             // map.put(plan.getId(), plan.getName());
-            metricList.add(plan.createMetrics());
+            metricMap.put(plan.getId(), plan.createMetrics());
         }
-        summary.setDistrictPlanMetrics(metricList);
+        summary.setDistrictPlanIdToMetricsMap(metricMap);
 
         return summary;
     }

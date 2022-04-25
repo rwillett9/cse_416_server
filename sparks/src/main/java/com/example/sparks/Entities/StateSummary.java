@@ -5,21 +5,20 @@ import java.util.Map;
 
 public class StateSummary {
     // @TODO
-    // private Map<Long, String> districtPlanIdToNameMap;
-    private List<DistrictPlanMetrics> districtPlanMetrics;
+    private Map<Long, DistrictPlanMetrics> districtPlanIdToMetricsMap;
 
     /**
-     * @return List<DistrictPlanMetrics> return the districtPlanMetrics
+     * @return Map<Long, DistrictPlanMetrics> return the districtPlanIdToMetricsMap
      */
-    public List<DistrictPlanMetrics> getDistrictPlanMetrics() {
-        return districtPlanMetrics;
+    public Map<Long, DistrictPlanMetrics> getDistrictPlanIdToMetricsMap() {
+        return districtPlanIdToMetricsMap;
     }
 
     /**
-     * @param districtPlanMetrics the districtPlanMetrics to set
+     * @param districtPlanIdToMetricsMap the districtPlanIdToMetricsMap to set
      */
-    public void setDistrictPlanMetrics(List<DistrictPlanMetrics> districtPlanMetrics) {
-        this.districtPlanMetrics = districtPlanMetrics;
+    public void setDistrictPlanIdToMetricsMap(Map<Long, DistrictPlanMetrics> districtPlanIdToMetricsMap) {
+        this.districtPlanIdToMetricsMap = districtPlanIdToMetricsMap;
     }
 
 }
