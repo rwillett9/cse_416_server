@@ -1,9 +1,9 @@
-package com.example.sparks.Entities;
-
-import com.example.sparks.Embeddables.Coordinate;
+package com.example.sparks.entity;
 
 import java.util.List;
 // import org.springframework.data.util.Pair;
+
+import com.example.sparks.embeddable.Coordinate;
 
 // import javax.persistence.Entity;
 

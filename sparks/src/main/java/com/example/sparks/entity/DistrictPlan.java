@@ -1,4 +1,4 @@
-package com.example.sparks.Entities;
+package com.example.sparks.entity;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
-import com.example.sparks.Embeddables.Coordinate;
+import com.example.sparks.embeddable.Coordinate;
 
 /**
  * This Entity will store all the data for each District Plan
@@ -42,7 +42,11 @@ public class DistrictPlan {
     private double fairness;
     private double meanPopulationDeviation;
     private String name;
+
+    // @TODO look into this
     private int numCompetitiveDistricts;
+
+    // @TODO needs to be indexed by minority
     private int numMinorityMajorityDistricts;
 
     @ElementCollection

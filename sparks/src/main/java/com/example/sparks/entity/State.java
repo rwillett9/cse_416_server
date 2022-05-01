@@ -1,4 +1,4 @@
-package com.example.sparks.Entities;
+package com.example.sparks.entity;
 
 import java.util.List;
 

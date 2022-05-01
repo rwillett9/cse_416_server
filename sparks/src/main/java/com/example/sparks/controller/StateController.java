@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.sparks.Entities.DistrictPlan;
-import com.example.sparks.Entities.DistrictPlanMetrics;
-import com.example.sparks.Entities.SeatShareData;
-import com.example.sparks.Entities.State;
-import com.example.sparks.Entities.StateSummary;
-import com.example.sparks.Repositories.StateRepository;
+import com.example.sparks.entity.DistrictPlan;
+import com.example.sparks.entity.DistrictPlanMetrics;
+import com.example.sparks.entity.SeatShareData;
+import com.example.sparks.entity.State;
+import com.example.sparks.entity.StateSummary;
+import com.example.sparks.repository.StateRepository;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

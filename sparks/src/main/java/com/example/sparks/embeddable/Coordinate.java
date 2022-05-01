@@ -1,4 +1,4 @@
-package com.example.sparks.Embeddables;
+package com.example.sparks.embeddable;
 
 import javax.persistence.Embeddable;
 

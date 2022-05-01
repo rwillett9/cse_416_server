@@ -1,3 +1,4 @@
+package com.example.sparks.repository;
 // package com.example.sparks.Repositories;
 
 // import com.example.sparks.Entities.DistrictPlan;

@@ -1,8 +1,8 @@
-package com.example.sparks.Repositories;
+package com.example.sparks.repository;
 
 import java.util.List;
 
-import com.example.sparks.Entities.State;
+import com.example.sparks.entity.State;
 
 import org.springframework.data.repository.CrudRepository;
 
