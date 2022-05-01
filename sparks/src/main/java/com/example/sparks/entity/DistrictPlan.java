@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
 import com.example.sparks.embeddable.Coordinate;
+import com.example.sparks.nonentity.DistrictPlanMetrics;
+import com.example.sparks.nonentity.SeatShareData;
 
 /**
  * This Entity will store all the data for each District Plan
@@ -48,6 +50,9 @@ public class DistrictPlan {
 
     // @TODO needs to be indexed by minority
     private int numMinorityMajorityDistricts;
+    // @ElementCollection
+    // @CollectionTable(name = "minority_majority_district_count", joinColumns = @JoinColumn(name = "district_plan_id"))
+    
 
     @ElementCollection
     @CollectionTable(name = "republican_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
@@ -301,6 +306,7 @@ public class DistrictPlan {
         metrics.setCompactness(this.getCompactness());
         metrics.setCompetitiveDistrictIds(this.getCompetitiveDistrictIds());
         metrics.setDemocratDistrictIds(this.getDemocratDistrictIds());
+        metrics.setId(this.getId());
         metrics.setMeanPopulationDeviation(this.getMeanPopulationDeviation());
         metrics.setNumMinorityMajorityDistricts(this.getNumMinorityMajorityDistricts());
         metrics.setRepublicanDistrictIds(this.getRepublicanDistrictIds());

@@ -1,4 +1,4 @@
-package com.example.sparks.entity;
+package com.example.sparks.nonentity;
 
 import java.util.List;
 // import org.springframework.data.util.Pair;

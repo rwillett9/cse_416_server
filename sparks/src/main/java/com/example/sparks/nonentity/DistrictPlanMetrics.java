@@ -1,4 +1,4 @@
-package com.example.sparks.entity;
+package com.example.sparks.nonentity;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ public class DistrictPlanMetrics {
     private double compactness;
     private List<Long> competitiveDistrictIds;
     private List<Long> democratDistrictIds;
+    private Long id;
     private String name;
     private int numMinorityMajorityDistricts;
     private double meanPopulationDeviation;
@@ -108,6 +109,21 @@ public class DistrictPlanMetrics {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    /**
+     * @return Long return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }
