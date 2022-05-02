@@ -3,14 +3,15 @@ package com.example.sparks.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.sparks.embeddable.BoxAndWhiskerMap;
 import com.example.sparks.entity.DistrictPlan;
 import com.example.sparks.entity.State;
+import com.example.sparks.enumerable.PoliticalGroup;
 import com.example.sparks.nonentity.DistrictPlanMetrics;
 import com.example.sparks.nonentity.SeatShareData;
 import com.example.sparks.nonentity.StateSummary;
 import com.example.sparks.repository.StateRepository;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -78,6 +79,50 @@ public class StateController {
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
 
         return districtPlan.createMetrics();
+    }
+
+    // @TODO testing purposes only
+    @PostMapping(path="/add-test-data")
+    public @ResponseBody State addTestMinorityDistricts() {
+        State s = stateRepository.findByStateCode("NV").get(0);
+
+        List<BoxAndWhiskerMap> mapList = new ArrayList<BoxAndWhiskerMap>();
+        BoxAndWhiskerMap map1 = new BoxAndWhiskerMap();
+        map1.setPoliticalGroup(PoliticalGroup.DEMOCRAT);
+        map1.setMinimum(1);
+        map1.setLowerQuartile(2);
+        map1.setMedian(3);
+        map1.setUpperQuartile(4);
+        map1.setMaximum(5);
+        BoxAndWhiskerMap map2 = new BoxAndWhiskerMap();
+        map2.setPoliticalGroup(PoliticalGroup.REPUBLICAN);
+        map2.setMinimum(6);
+        map2.setLowerQuartile(7);
+        map2.setMedian(8);
+        map2.setUpperQuartile(9);
+        map2.setMaximum(10);
+        mapList.add(map1);
+        mapList.add(map2);
+
+        s.setSeawulfBoxAndWhiskerMap(mapList);
+
+        stateRepository.save(s);
+
+        return s;
+    }
+
+    // @TODO testing
+    @GetMapping(path="/test-district")
+    public @ResponseBody DistrictPlan getTestDistrict() {
+        State s = stateRepository.findByStateCode("NV").get(0);
+        DistrictPlan p = s.getDistrictPlanById(0L);
+        return p;
+    }
+
+    // @TODO testing
+    @GetMapping(path="/test-state")
+    public @ResponseBody State getTestState() {
+        return stateRepository.findByStateCode("NV").get(0);
     }
 
 }

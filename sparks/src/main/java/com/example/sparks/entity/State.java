@@ -2,13 +2,21 @@ package com.example.sparks.entity;
 
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
+import com.example.sparks.embeddable.BoxAndWhiskerMap;
+import com.example.sparks.embeddable.Coordinate;
+import com.example.sparks.embeddable.MajorityMinorityMap;
+import com.example.sparks.embeddable.RepublicanDemocratSplit;
 
 /**
  * This Entity will store all the data for each state, including geojson data(?)
@@ -20,12 +28,38 @@ public class State {
     @Column(name = "state_id")
     private Long id;
 
-    @Column(columnDefinition = "json")
     private String geoJson;
 
     @OneToMany
     @JoinColumn(name = "state_id")
     private List<DistrictPlan> districtPlans;
+
+    // START SEAWULF DATA
+    @ElementCollection
+    @CollectionTable(name = "seawulf_box_and_whisker_data", joinColumns = @JoinColumn(name = "state_id"))
+    @Embedded
+    private List<BoxAndWhiskerMap> seawulfBoxAndWhiskerMap;
+
+    @ElementCollection
+    @CollectionTable(name = "seawulf_majority_minority", joinColumns = @JoinColumn(name = "state_id"))
+    @Embedded
+    private List<MajorityMinorityMap> seawulfMajorityMinorityMap;
+
+    @ElementCollection
+    @CollectionTable(name = "seawulf_republican_democrat_split", joinColumns = @JoinColumn(name = "state_id"))
+    @Embedded
+    private List<RepublicanDemocratSplit> seawulfRepublicanDemocratSplit;
+
+    @ElementCollection
+    @CollectionTable(name = "seawulf_democrat_seat_share", joinColumns = @JoinColumn(name = "state_id"))
+    @Embedded
+    private List<Coordinate> seawulfDemocratSeatShareData;
+
+    @ElementCollection
+    @CollectionTable(name = "seawulf_republican_seat_share", joinColumns = @JoinColumn(name = "state_id"))
+    @Embedded
+    private List<Coordinate> seawulfRepublicanSeatShareData;
+    // END SEAWULF DATA
 
     private String stateCode;
 
@@ -95,6 +129,76 @@ public class State {
         .filter(plan -> districtPlanId.equals(plan.getId()))
         .findAny()
         .orElse(null);
+    }
+
+    /**
+     * @return List<BoxAndWhiskerMap> return the seawulfBoxAndWhiskerMap
+     */
+    public List<BoxAndWhiskerMap> getSeawulfBoxAndWhiskerMap() {
+        return seawulfBoxAndWhiskerMap;
+    }
+
+    /**
+     * @param seawulfBoxAndWhiskerMap the seawulfBoxAndWhiskerMap to set
+     */
+    public void setSeawulfBoxAndWhiskerMap(List<BoxAndWhiskerMap> seawulfBoxAndWhiskerMap) {
+        this.seawulfBoxAndWhiskerMap = seawulfBoxAndWhiskerMap;
+    }
+
+    /**
+     * @return List<MajorityMinorityMap> return the seawulfMajorityMinorityMap
+     */
+    public List<MajorityMinorityMap> getSeawulfMajorityMinorityMap() {
+        return seawulfMajorityMinorityMap;
+    }
+
+    /**
+     * @param seawulfMajorityMinorityMap the seawulfMajorityMinorityMap to set
+     */
+    public void setSeawulfMajorityMinorityMap(List<MajorityMinorityMap> seawulfMajorityMinorityMap) {
+        this.seawulfMajorityMinorityMap = seawulfMajorityMinorityMap;
+    }
+
+    /**
+     * @return List<RepublicanDemocratSplit> return the seawulfRepublicanDemocratSplit
+     */
+    public List<RepublicanDemocratSplit> getSeawulfRepublicanDemocratSplit() {
+        return seawulfRepublicanDemocratSplit;
+    }
+
+    /**
+     * @param seawulfRepublicanDemocratSplit the seawulfRepublicanDemocratSplit to set
+     */
+    public void setSeawulfRepublicanDemocratSplit(List<RepublicanDemocratSplit> seawulfRepublicanDemocratSplit) {
+        this.seawulfRepublicanDemocratSplit = seawulfRepublicanDemocratSplit;
+    }
+
+    /**
+     * @return List<Coordinate> return the seawulfDemocratSeatShareData
+     */
+    public List<Coordinate> getSeawulfDemocratSeatShareData() {
+        return seawulfDemocratSeatShareData;
+    }
+
+    /**
+     * @param seawulfDemocratSeatShareData the seawulfDemocratSeatShareData to set
+     */
+    public void setSeawulfDemocratSeatShareData(List<Coordinate> seawulfDemocratSeatShareData) {
+        this.seawulfDemocratSeatShareData = seawulfDemocratSeatShareData;
+    }
+
+    /**
+     * @return List<Coordinate> return the seawulfRepublicanSeatShareData
+     */
+    public List<Coordinate> getSeawulfRepublicanSeatShareData() {
+        return seawulfRepublicanSeatShareData;
+    }
+
+    /**
+     * @param seawulfRepublicanSeatShareData the seawulfRepublicanSeatShareData to set
+     */
+    public void setSeawulfRepublicanSeatShareData(List<Coordinate> seawulfRepublicanSeatShareData) {
+        this.seawulfRepublicanSeatShareData = seawulfRepublicanSeatShareData;
     }
 
 }

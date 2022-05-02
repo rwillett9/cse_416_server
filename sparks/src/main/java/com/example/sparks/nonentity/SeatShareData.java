@@ -19,7 +19,7 @@ public class SeatShareData {
     // @Id
     // @GeneratedValue(strategy=GenerationType.AUTO)
     // @Column(name = "seat_share_data_id")
-    private Long id;
+    // private Long id;
 
     private double biasAt50;
 
@@ -35,20 +35,6 @@ public class SeatShareData {
 
     private double responsiveness;
     private double symmetry;
-
-    /**
-     * @return Long return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return double return the biasAt50

@@ -1,6 +1,7 @@
 package com.example.sparks.entity;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
 import com.example.sparks.embeddable.Coordinate;
+import com.example.sparks.enumerable.PoliticalGroup;
 import com.example.sparks.nonentity.DistrictPlanMetrics;
 import com.example.sparks.nonentity.SeatShareData;
 
@@ -49,28 +51,30 @@ public class DistrictPlan {
     private int numCompetitiveDistricts;
 
     // @TODO needs to be indexed by minority
-    private int numMinorityMajorityDistricts;
-    // @ElementCollection
-    // @CollectionTable(name = "minority_majority_district_count", joinColumns = @JoinColumn(name = "district_plan_id"))
-    
+    // private int numMinorityMajorityDistricts;
+    @ElementCollection
+    @CollectionTable(name = "minority_majority_district_count", joinColumns = @JoinColumn(name = "district_plan_id"))
+    private Map<PoliticalGroup, Integer> minorityMajorityDistrictsMap;
 
     @ElementCollection
     @CollectionTable(name = "republican_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Long> republicanDistrictIds;
 
+    // START SEAT SHARE DATA
     @Embedded
     @ElementCollection
-    @CollectionTable(name = "district_plan_dem_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
+    @CollectionTable(name = "democrat_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Coordinate> seatShareDemocratData;
 
     @Embedded
     @ElementCollection
-    @CollectionTable(name = "district_plan_rep_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
+    @CollectionTable(name = "republican_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Coordinate> seatShareRepublicanData;
 
     private double seatShareBiasAt50;
     private double seatShareSymmetry;
     private double seatShareResponsiveness;
+    // END SEAT SHARE DATA
 
     /**
      * @return Long return the id
@@ -168,20 +172,6 @@ public class DistrictPlan {
      */
     public void setNumCompetitiveDistricts(int numCompetitiveDistricts) {
         this.numCompetitiveDistricts = numCompetitiveDistricts;
-    }
-
-    /**
-     * @return int return the numMinorityMajorityDistricts
-     */
-    public int getNumMinorityMajorityDistricts() {
-        return numMinorityMajorityDistricts;
-    }
-
-    /**
-     * @param numMinorityMajorityDistricts the numMinorityMajorityDistricts to set
-     */
-    public void setNumMinorityMajorityDistricts(int numMinorityMajorityDistricts) {
-        this.numMinorityMajorityDistricts = numMinorityMajorityDistricts;
     }
 
     /**
@@ -308,7 +298,7 @@ public class DistrictPlan {
         metrics.setDemocratDistrictIds(this.getDemocratDistrictIds());
         metrics.setId(this.getId());
         metrics.setMeanPopulationDeviation(this.getMeanPopulationDeviation());
-        metrics.setNumMinorityMajorityDistricts(this.getNumMinorityMajorityDistricts());
+        // metrics.setNumMinorityMajorityDistricts(this.getNumMinorityMajorityDistricts());
         metrics.setRepublicanDistrictIds(this.getRepublicanDistrictIds());
         metrics.setName(this.getName());
         return metrics;
@@ -325,6 +315,28 @@ public class DistrictPlan {
         seatShareData.setResponsiveness(this.getSeatShareResponsiveness());
         seatShareData.setSymmetry(this.getSeatShareSymmetry());
         return seatShareData;
+    }
+
+
+    /**
+     * @return Map<PoliticalGroup, Integer> return the minorityMajorityDistrictsMap
+     */
+    public Map<PoliticalGroup, Integer> getMinorityMajorityDistrictsMap() {
+        return minorityMajorityDistrictsMap;
+    }
+
+    /**
+     * @param minorityMajorityDistrictsMap the minorityMajorityDistrictsMap to set
+     */
+    public void setMinorityMajorityDistrictsMap(Map<PoliticalGroup, Integer> minorityMajorityDistrictsMap) {
+        this.minorityMajorityDistrictsMap = minorityMajorityDistrictsMap;
+    }
+
+    /**
+     * @param seatShareResponsiveness the seatShareResponsiveness to set
+     */
+    public void setSeatShareResponsiveness(double seatShareResponsiveness) {
+        this.seatShareResponsiveness = seatShareResponsiveness;
     }
 
 }
