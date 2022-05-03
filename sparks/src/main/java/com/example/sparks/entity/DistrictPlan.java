@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 import com.example.sparks.embeddable.Coordinate;
 import com.example.sparks.enumerable.PoliticalGroup;
@@ -39,8 +40,9 @@ public class DistrictPlan {
     private List<Long> democratDistrictIds;
     
     // @TODO: setup districts
-
-
+    @OneToMany
+    @JoinColumn(name = "district_plan_id")
+    private List<District> districts;
 
     private double efficiencyGap;
     private double fairness;
@@ -335,6 +337,21 @@ public class DistrictPlan {
      */
     public void setSeatShareResponsiveness(double seatShareResponsiveness) {
         this.seatShareResponsiveness = seatShareResponsiveness;
+    }
+
+
+    /**
+     * @return List<District> return the districts
+     */
+    public List<District> getDistricts() {
+        return districts;
+    }
+
+    /**
+     * @param districts the districts to set
+     */
+    public void setDistricts(List<District> districts) {
+        this.districts = districts;
     }
 
 }
