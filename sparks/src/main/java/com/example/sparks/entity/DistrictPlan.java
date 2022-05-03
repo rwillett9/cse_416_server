@@ -50,8 +50,6 @@ public class DistrictPlan {
     // @TODO look into this
     private int numCompetitiveDistricts;
 
-    // @TODO needs to be indexed by minority
-    // private int numMinorityMajorityDistricts;
     @ElementCollection
     @CollectionTable(name = "minority_majority_district_count", joinColumns = @JoinColumn(name = "district_plan_id"))
     private Map<PoliticalGroup, Integer> minorityMajorityDistrictsMap;
@@ -63,12 +61,12 @@ public class DistrictPlan {
     // START SEAT SHARE DATA
     @Embedded
     @ElementCollection
-    @CollectionTable(name = "democrat_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
+    @CollectionTable(name = "seat_share_democrat_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Coordinate> seatShareDemocratData;
 
     @Embedded
     @ElementCollection
-    @CollectionTable(name = "republican_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
+    @CollectionTable(name = "seat_share_republican_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Coordinate> seatShareRepublicanData;
 
     private double seatShareBiasAt50;
