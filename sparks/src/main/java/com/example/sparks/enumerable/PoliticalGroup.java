@@ -7,5 +7,6 @@ public enum PoliticalGroup {
     DEMOCRAT,
     HISPANIC_LATINO,
     REPUBLICAN,
-    TOTAL_POPULATION
+    TOTAL_POPULATION,
+    WHITE
 }
