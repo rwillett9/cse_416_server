@@ -21,12 +21,12 @@ public class Precinct {
     private Long id;
 
     @ElementCollection
-    @CollectionTable(name = "precinct_demographic_data", joinColumns = @JoinColumn(name = "precinct_id"))
-    private Map<PoliticalGroup, Integer> demographicData;
+    @CollectionTable(name = "precinct_demographic_and_election_data", joinColumns = @JoinColumn(name = "precinct_id"))
+    private Map<PoliticalGroup, Integer> demographicAndElectionData;
 
     // @TODO geojson for each precinct or 1 geojson for all precincts?
 
-    private int totalPopulation;
+    private String name;
 
     /**
      * @return Long return the id
@@ -43,31 +43,32 @@ public class Precinct {
     }
 
     /**
-     * @return Map<PoliticalGroup, Integer> return the demographicData
+     * @return String return the name
      */
-    public Map<PoliticalGroup, Integer> getDemographicData() {
-        return demographicData;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param demographicData the demographicData to set
+     * @param name the name to set
      */
-    public void setDemographicData(Map<PoliticalGroup, Integer> demographicData) {
-        this.demographicData = demographicData;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    /**
+     * @return Map<PoliticalGroup, Integer> return the demographicAndElectionData
+     */
+    public Map<PoliticalGroup, Integer> getDemographicAndElectionData() {
+        return demographicAndElectionData;
     }
 
     /**
-     * @return int return the totalPopulation
+     * @param demographicAndElectionData the demographicAndElectionData to set
      */
-    public int getTotalPopulation() {
-        return totalPopulation;
-    }
-
-    /**
-     * @param totalPopulation the totalPopulation to set
-     */
-    public void setTotalPopulation(int totalPopulation) {
-        this.totalPopulation = totalPopulation;
+    public void setDemographicAndElectionData(Map<PoliticalGroup, Integer> demographicAndElectionData) {
+        this.demographicAndElectionData = demographicAndElectionData;
     }
 
 }

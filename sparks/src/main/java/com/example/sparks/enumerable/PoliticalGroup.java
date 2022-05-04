@@ -6,5 +6,6 @@ public enum PoliticalGroup {
     ASIAN,
     DEMOCRAT,
     HISPANIC_LATINO,
-    REPUBLICAN
+    REPUBLICAN,
+    TOTAL_POPULATION
 }
