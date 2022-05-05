@@ -2,28 +2,11 @@ package com.example.sparks.embeddable;
 
 import javax.persistence.Embeddable;
 
-import com.example.sparks.enumerable.PoliticalGroup;
-
 @Embeddable
 public class RepublicanDemocratSplit {
-    private PoliticalGroup politicalGroup;
     private int republicanSeats;
     private int democratSeats;
     private int count;
-
-    /**
-     * @return PoliticalGroup return the politicalGroup
-     */
-    public PoliticalGroup getPoliticalGroup() {
-        return politicalGroup;
-    }
-
-    /**
-     * @param politicalGroup the politicalGroup to set
-     */
-    public void setPoliticalGroup(PoliticalGroup politicalGroup) {
-        this.politicalGroup = politicalGroup;
-    }
 
     /**
      * @return int return the republicanSeats

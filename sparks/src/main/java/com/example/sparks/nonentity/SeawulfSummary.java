@@ -3,6 +3,7 @@ package com.example.sparks.nonentity;
 import java.util.List;
 import java.util.Map;
 
+import com.example.sparks.embeddable.RepublicanDemocratSplit;
 import com.example.sparks.enumerable.PoliticalGroup;
 
 /**
@@ -12,7 +13,11 @@ import com.example.sparks.enumerable.PoliticalGroup;
 public class SeawulfSummary {
     private Map<PoliticalGroup,List<BoxAndWhiskerData>> boxAndWhiskerData;
     private Map<PoliticalGroup, Map<Integer, Integer>> majorityMinorityRange;
-    private Map<String, Integer> republicanDemocratSplit;
+    
+    // @TODO discuss this (along with @TODO in State.java)
+    private List<RepublicanDemocratSplit> republicanDemocratSplit;
+    // private Map<String, Integer> republicanDemocratSplit;
+
     private List<SeatShareData> seatShareDataList;
 
     /**
@@ -27,20 +32,6 @@ public class SeawulfSummary {
      */
     public void setBoxAndWhiskerData(Map<PoliticalGroup,List<BoxAndWhiskerData>> boxAndWhiskerData) {
         this.boxAndWhiskerData = boxAndWhiskerData;
-    }
-
-    /**
-     * @return Map<String, Integer> return the republicanDemocratSplit
-     */
-    public Map<String, Integer> getRepublicanDemocratSplit() {
-        return republicanDemocratSplit;
-    }
-
-    /**
-     * @param republicanDemocratSplit the republicanDemocratSplit to set
-     */
-    public void setRepublicanDemocratSplit(Map<String, Integer> republicanDemocratSplit) {
-        this.republicanDemocratSplit = republicanDemocratSplit;
     }
 
     /**
@@ -69,6 +60,21 @@ public class SeawulfSummary {
      */
     public void setMajorityMinorityRange(Map<PoliticalGroup, Map<Integer, Integer>> majorityMinorityRange) {
         this.majorityMinorityRange = majorityMinorityRange;
+    }
+
+
+    /**
+     * @return List<RepublicanDemocratSplit> return the republicanDemocratSplit
+     */
+    public List<RepublicanDemocratSplit> getRepublicanDemocratSplit() {
+        return republicanDemocratSplit;
+    }
+
+    /**
+     * @param republicanDemocratSplit the republicanDemocratSplit to set
+     */
+    public void setRepublicanDemocratSplit(List<RepublicanDemocratSplit> republicanDemocratSplit) {
+        this.republicanDemocratSplit = republicanDemocratSplit;
     }
 
 }

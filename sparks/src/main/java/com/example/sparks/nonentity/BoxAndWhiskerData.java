@@ -7,6 +7,22 @@ public class BoxAndWhiskerData {
     private double minimum;
     private double upperQuartile;
 
+    public BoxAndWhiskerData() {}
+
+    public BoxAndWhiskerData(
+        double lowerQuartile,
+        double maximum,
+        double median,
+        double minimum,
+        double upperQuartile
+    ) {
+        this.lowerQuartile = lowerQuartile;
+        this.maximum = maximum;
+        this.median = median;
+        this.minimum = minimum;
+        this.upperQuartile = upperQuartile;
+    }
+
     /**
      * @return double return the lowerQuartile
      */

@@ -38,8 +38,7 @@ public class DistrictPlan {
     @ElementCollection
     @CollectionTable(name = "democrat_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
     private List<Long> democratDistrictIds;
-    
-    // @TODO: setup districts
+
     @OneToMany
     @JoinColumn(name = "district_plan_id")
     private List<District> districts;

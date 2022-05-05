@@ -2,16 +2,13 @@ package com.example.sparks.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import com.example.sparks.embeddable.BoxAndWhiskerMap;
-import com.example.sparks.entity.District;
 import com.example.sparks.entity.DistrictPlan;
-import com.example.sparks.entity.Precinct;
 import com.example.sparks.entity.State;
-import com.example.sparks.enumerable.PoliticalGroup;
 import com.example.sparks.nonentity.DistrictPlanMetrics;
 import com.example.sparks.nonentity.SeatShareData;
+import com.example.sparks.nonentity.SeawulfRawData;
+import com.example.sparks.nonentity.SeawulfSummary;
 import com.example.sparks.nonentity.StateSummary;
 import com.example.sparks.repository.DistrictPlanRepository;
 import com.example.sparks.repository.DistrictRepository;
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -142,9 +138,15 @@ public class StateController {
     }
 
     // @TODO testing
-    @GetMapping(path="/test-state")
-    public @ResponseBody State getTestState() {
-        return stateRepository.findByStateCode("NV").get(0);
+    @GetMapping(path="/test-state-seawulf-summary")
+    public @ResponseBody SeawulfSummary getTestStateSeawulfSummary() {
+        return stateRepository.findByStateCode("NV").get(0).createSeawulfSummary();
+    }
+
+    // @TODO testing
+    @GetMapping(path="/test-state-seawulf-raw")
+    public @ResponseBody SeawulfRawData getTestStateSeawulfRawData() {
+        return stateRepository.findByStateCode("NV").get(0).createSeawulfRawData();
     }
 
 

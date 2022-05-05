@@ -1,6 +1,10 @@
 package com.example.sparks.entity;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -17,6 +21,10 @@ import com.example.sparks.embeddable.BoxAndWhiskerMap;
 import com.example.sparks.embeddable.Coordinate;
 import com.example.sparks.embeddable.MajorityMinorityMap;
 import com.example.sparks.embeddable.RepublicanDemocratSplit;
+import com.example.sparks.enumerable.PoliticalGroup;
+import com.example.sparks.nonentity.BoxAndWhiskerData;
+import com.example.sparks.nonentity.SeawulfRawData;
+import com.example.sparks.nonentity.SeawulfSummary;
 
 /**
  * This Entity will store all the data for each state, including geojson data(?)
@@ -59,6 +67,7 @@ public class State {
     @CollectionTable(name = "seawulf_republican_seat_share", joinColumns = @JoinColumn(name = "state_id"))
     @Embedded
     private List<Coordinate> seawulfRepublicanSeatShareData;
+    // @TODO figure out how other seat share metrics work for seawulf data
     // END SEAWULF DATA
 
     private String stateCode;
@@ -118,17 +127,6 @@ public class State {
      */
     public void setDistrictPlans(List<DistrictPlan> districtPlans) {
         this.districtPlans = districtPlans;
-    }
-
-    /**
-     * @param districtPlanId the id of the plan to retrieve
-     * @return DistrictPlan with matching id if it exists, otherwise null
-     */
-    public DistrictPlan getDistrictPlanById(Long districtPlanId) {
-        return districtPlans.stream()
-        .filter(plan -> districtPlanId.equals(plan.getId()))
-        .findAny()
-        .orElse(null);
     }
 
     /**
@@ -201,4 +199,87 @@ public class State {
         this.seawulfRepublicanSeatShareData = seawulfRepublicanSeatShareData;
     }
 
+    /**
+     * @param districtPlanId the id of the plan to retrieve
+     * @return DistrictPlan with matching id if it exists, otherwise null
+     */
+    public DistrictPlan getDistrictPlanById(Long districtPlanId) {
+        return districtPlans.stream()
+        .filter(plan -> districtPlanId.equals(plan.getId()))
+        .findAny()
+        .orElse(null);
+    }
+
+    /**
+     * formats the seawulf summary data into a better format for the frontend
+     * @return SeawulfSummary Object
+     */
+    public SeawulfSummary createSeawulfSummary() {
+        // we need to reformat the data from the database into a more organized format
+        // first, box and whisker and majority minority becomes indexed by Political Group
+        // each political group contains the sorted list (increasing order) of box and whisker data
+        Map<PoliticalGroup,List<BoxAndWhiskerData>> tempBoxAndWhiskerMap = 
+            new HashMap<PoliticalGroup, List<BoxAndWhiskerData>>();
+        Map<PoliticalGroup, Map<Integer, Integer>> tempMajorityMinorityRangeMap =
+            new HashMap<PoliticalGroup, Map<Integer, Integer>>();
+        for (PoliticalGroup group: PoliticalGroup.values()) {
+            // skip these metrics for total population
+            if (group == PoliticalGroup.TOTAL_POPULATION) {
+                continue;
+            }
+            // for each group, we filter out other groups, map the data to a manageable format,
+            // then sort the data in ascending order
+            List<BoxAndWhiskerData> tempList = this.getSeawulfBoxAndWhiskerMap().stream()
+                .filter(d -> d.getPoliticalGroup() == group)
+                .map(d -> new BoxAndWhiskerData(
+                    d.getLowerQuartile(),
+                    d.getMaximum(),
+                    d.getMedian(),
+                    d.getMinimum(),
+                    d.getUpperQuartile()
+                ))
+                .sorted(Comparator.comparingDouble(BoxAndWhiskerData::getMedian))
+                .collect(Collectors.toList());
+            tempBoxAndWhiskerMap.put(group, tempList);
+
+            // we can reuse this loop since majority minority range is also indexed by Political Group
+            // don't do these calculations for white demographic
+            if (group == PoliticalGroup.WHITE) {
+                continue;
+            }
+            // for each group, filter out other groups, and map data to manageable format
+            Map<Integer, Integer> tempMap = this.getSeawulfMajorityMinorityMap().stream()
+                .filter(d -> d.getPoliticalGroup() == group)
+                .collect(Collectors.toMap(d -> d.getNumMajorityMinorityDistricts(), d -> d.getCount()));
+            tempMajorityMinorityRangeMap.put(group, tempMap);
+        }
+
+        // @TODO discuss best format for this data (along with @TODO in SeawulfSummary.java)
+        // // next, we reformat republican democrat split data
+        // // format is key="<repSeats> <demSeats>", value=count
+        // Map<String, Integer> tempRepublicanDemocratSplitMap = this.getSeawulfRepublicanDemocratSplit().stream()
+        //     .collect(Collectors.toMap(d -> d.getRepublicanSeats() + " " + d.getDemocratSeats(),d -> d.getCount()));
+
+
+
+
+
+
+        // populate summary object and return it
+        SeawulfSummary summary = new SeawulfSummary();
+        summary.setBoxAndWhiskerData(tempBoxAndWhiskerMap);
+        summary.setMajorityMinorityRange(tempMajorityMinorityRangeMap);
+        summary.setRepublicanDemocratSplit(this.getSeawulfRepublicanDemocratSplit());
+        return summary;
+    }
+
+    public SeawulfRawData createSeawulfRawData() {
+        SeawulfRawData data = new SeawulfRawData();
+        data.setSeawulfBoxAndWhiskerMap(this.seawulfBoxAndWhiskerMap);
+        data.setSeawulfDemocratSeatShareData(this.seawulfDemocratSeatShareData);
+        data.setSeawulfMajorityMinorityMap(this.seawulfMajorityMinorityMap);
+        data.setSeawulfRepublicanDemocratSplit(this.seawulfRepublicanDemocratSplit);
+        data.setSeawulfRepublicanSeatShareData(this.seawulfRepublicanSeatShareData);
+        return data;
+    }
 }
