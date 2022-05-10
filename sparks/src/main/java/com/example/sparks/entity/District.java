@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import com.example.sparks.enumerable.PoliticalGroup;
+
 @Entity
 public class District {
     @Id
@@ -53,6 +55,16 @@ public class District {
      */
     public void setPrecincts(List<Precinct> precincts) {
         this.precincts = precincts;
+    }
+
+    /**
+     * @param group demographic group to find population data for
+     * @return sum of demographic data over precincts in this district
+     */
+    public int getPopulationData(PoliticalGroup group) {
+        return this.precincts.stream()
+            .map(p -> p.getDemographicAndElectionData().get(group))
+            .reduce(0, (a, b) -> a + b);
     }
 
 }

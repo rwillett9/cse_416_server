@@ -1,7 +1,13 @@
 package com.example.sparks.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -351,6 +357,264 @@ public class DistrictPlan {
      */
     public void setDistricts(List<District> districts) {
         this.districts = districts;
+    }
+
+    /**
+     * generates the seat share curve using Jeffrey Shen's python script as a reference
+     * https://github.com/jeffreyshen19/Seats-Votes-Curves/blob/master/generator/uniform_partisan_swing.py
+     * @return SeatShareData Object with generated data
+     */
+    public SeatShareData generateSeatShareData() {
+        // initialize SeatShareData object
+        SeatShareData seatShareData = new SeatShareData();
+
+        // important value needed several times
+        int numDistricts = this.districts.size();
+        final double SWING_CONSTANT = 0.005;
+
+        // initialize coordinate Objects
+        List<Coordinate> democratCoordinates = new ArrayList<Coordinate>();
+        List<Coordinate> republicanCoordinates = new ArrayList<Coordinate>();
+
+        // add guaranteed endpoints
+        democratCoordinates.add(new Coordinate(0, 0));
+        democratCoordinates.add(new Coordinate(1, 1));
+        republicanCoordinates.add(new Coordinate(0, 0));
+        republicanCoordinates.add(new Coordinate(1, 1));
+
+        // initialize district level voting data
+        List<Integer> democratDistrictVotes = this.districts.stream()
+            .map(d -> d.getPopulationData(PoliticalGroup.DEMOCRAT))
+            .collect(Collectors.toList());
+        List<Integer> republicanDistrictVotes = this.districts.stream()
+            .map(d -> d.getPopulationData(PoliticalGroup.REPUBLICAN))
+            .collect(Collectors.toList());
+        List<Map<PoliticalGroup,Double>> votesByDistrict = new ArrayList<Map<PoliticalGroup,Double>>();
+
+        // gather vote tallies
+        int totalDemocratVotes = 0;
+        int totalRepublicanVotes = 0;
+        int totalVotes = 0;
+        for (int i = 0; i < numDistricts; i++) {
+            totalDemocratVotes += democratDistrictVotes.get(i);
+            totalRepublicanVotes += republicanDistrictVotes.get(i);
+            totalVotes += democratDistrictVotes.get(i) + republicanDistrictVotes.get(i);
+            double percentDemocrat = (double)democratDistrictVotes.get(i)
+                / ((double)democratDistrictVotes.get(i) + (double)republicanDistrictVotes.get(i));
+            
+            // collect tallied data by district to be used in main loop
+            Map<PoliticalGroup,Double> tempMap = new HashMap<PoliticalGroup,Double>();
+            tempMap.put(PoliticalGroup.DEMOCRAT, percentDemocrat);
+            tempMap.put(PoliticalGroup.REPUBLICAN, 1.0 - percentDemocrat);
+            votesByDistrict.add(tempMap);
+        }
+
+        // get starting points for 2 main loops
+        double republicanVoteShare = (double)totalRepublicanVotes / (double)totalVotes;
+        double democratVoteShare = (double)totalDemocratVotes / (double)totalVotes;
+
+        // randomness element
+        double diff = (((100.0 * republicanVoteShare) % 1) - ((100.0 * democratVoteShare) % 1)) / 100.0;
+
+        // declare loop variables
+        boolean[] districtOverflowedDemocrat = new boolean[numDistricts];
+        boolean[] districtOverflowedRepublican = new boolean[numDistricts];
+        double[] updatedValuesDemocrat = new double[numDistricts];
+        double[] updatedValuesRepublican = new double[numDistricts];
+
+        // main republican start to 1 loop
+        double i = republicanVoteShare;
+        int counter = 0;
+        while (i <= 1) {
+            // initialize counters for 1000 random vote simulations
+            int totalRepublicanSeats = 0;
+            int totalDemocratSeats = 0;
+
+            // simulate 1000 random vote simulations
+            for (int j = 0; j < 1000; j++) {
+                // tells us which districts are overflowed
+                Arrays.fill(districtOverflowedDemocrat, false);
+                Arrays.fill(districtOverflowedRepublican, false);
+
+                // count excess votes
+                int excessDemocrat = 0;
+                int excessRepublican = 0;
+
+
+                // store district vote counts for this iteration
+                Arrays.fill(updatedValuesDemocrat, 0);
+                Arrays.fill(updatedValuesRepublican, 0);
+
+                // iterate over each district and distribute votes
+                for (int k = 0; k < numDistricts; k++) {
+                    // get percentage of this district's rep/dem votes
+                    updatedValuesRepublican[k] = votesByDistrict.get(k).get(PoliticalGroup.REPUBLICAN) 
+                        + (counter * SWING_CONSTANT) + (SWING_CONSTANT * (int)(Math.random() * 11 - 5));
+                    updatedValuesDemocrat[k] = 1 - updatedValuesRepublican[k] + diff;
+
+                    // account for possible overflow
+                    if (updatedValuesDemocrat[k] > 1) {
+                        excessDemocrat += 1;
+                        districtOverflowedDemocrat[k] = true;
+                    }
+                    if (updatedValuesRepublican[k] > 1) {
+                        excessRepublican += 1;
+                        districtOverflowedRepublican[k] = true;
+                    }
+                }
+
+                // iterate over each district to redistribute overflow(if any) and compute winner
+                for (int k = 0; k < numDistricts; k++) {
+                    // overflow mechanic
+                    if (!districtOverflowedRepublican[k]) {
+                        updatedValuesRepublican[k] += 
+                            SWING_CONSTANT * (excessRepublican / (numDistricts - excessRepublican));
+                    }
+                    if (!districtOverflowedDemocrat[k]) {
+                        updatedValuesDemocrat[k] -= 
+                            SWING_CONSTANT * (excessDemocrat / (numDistricts - excessDemocrat));
+                    }
+
+                    // check who won this district and tally
+                    if (updatedValuesRepublican[k] > .5) {
+                        totalRepublicanSeats += 1;
+                    }
+                    if (updatedValuesDemocrat[k] > .5) {
+                        totalDemocratSeats += 1;
+                    }
+                }
+            }
+
+            // update loop counters
+            i += SWING_CONSTANT;
+            counter++;
+
+            // store generate seat curve data
+            if (i > 0 && i < 1) {
+                republicanCoordinates.add(
+                    new Coordinate(i, (double)totalRepublicanSeats / ((double)numDistricts * 1000)));
+                democratCoordinates.add(
+                    new Coordinate(1 - i + diff, (double)totalDemocratSeats / ((double)numDistricts * 1000)));
+            }
+        }
+
+        // main democrat start to 1 loop
+        i = democratVoteShare;
+        counter = 0;
+        while (i <= 1) {
+            // initialize counters for 1000 random vote simulations
+            int totalRepublicanSeats = 0;
+            int totalDemocratSeats = 0;
+
+            // simulate 1000 random vote simulations
+            for (int j = 0; j < 1000; j++) {
+                // tells us which districts are overflowed
+                Arrays.fill(districtOverflowedDemocrat, false);
+                Arrays.fill(districtOverflowedRepublican, false);
+
+                // count excess votes
+                int excessDemocrat = 0;
+                int excessRepublican = 0;
+
+                // store district vote counts for this iteration
+                Arrays.fill(updatedValuesDemocrat, 0);
+                Arrays.fill(updatedValuesRepublican, 0);
+
+                // iterate over each district and distribute votes
+                for (int k = 0; k < numDistricts; k++) {
+                    // get percentage of this district's rep/dem votes
+                    updatedValuesDemocrat[k] = votesByDistrict.get(k).get(PoliticalGroup.DEMOCRAT) 
+                        + (counter * SWING_CONSTANT) + (SWING_CONSTANT * (int)(Math.random() * 11 - 5)) + diff;
+                    updatedValuesRepublican[k] = 1 - (updatedValuesDemocrat[k] - diff);
+
+                    // account for possible overflow
+                    if (updatedValuesDemocrat[k] > 1) {
+                        excessDemocrat += 1;
+                        districtOverflowedDemocrat[k] = true;
+                    }
+                    if (updatedValuesRepublican[k] > 1) {
+                        excessRepublican += 1;
+                        districtOverflowedRepublican[k] = true;
+                    }
+                }
+
+                // iterate over each district to redistribute overflow(if any) and compute winner
+                for (int k = 0; k < numDistricts; k++) {
+                    // overflow mechanic
+                    if (!districtOverflowedRepublican[k]) {
+                        updatedValuesRepublican[k] -= 
+                            SWING_CONSTANT * (excessRepublican / (numDistricts - excessRepublican));
+                    }
+                    if (!districtOverflowedDemocrat[k]) {
+                        updatedValuesDemocrat[k] += 
+                            SWING_CONSTANT * (excessDemocrat / (numDistricts - excessDemocrat));
+                    }
+
+                    // check who won this district and tally
+                    if (updatedValuesRepublican[k] > .5) {
+                        totalRepublicanSeats += 1;
+                    }
+                    if (updatedValuesDemocrat[k] > .5) {
+                        totalDemocratSeats += 1;
+                    }
+                }
+            }
+
+            // update loop counters
+            i += SWING_CONSTANT;
+            counter++;
+
+            // store generate seat curve data
+            if (i > 0 && i + diff < 1) {
+                republicanCoordinates.add(
+                    new Coordinate(1 - i, (double)totalRepublicanSeats / ((double)numDistricts * 1000)));
+                democratCoordinates.add(
+                    new Coordinate(i + diff, (double)totalDemocratSeats / ((double)numDistricts * 1000)));
+            }
+        }
+
+        // sort coordinate lists
+        democratCoordinates.sort(Comparator.comparing(Coordinate::getX));
+        republicanCoordinates.sort(Comparator.comparing(Coordinate::getX));
+
+        // calculate bias as close to 50 as possible
+        Coordinate republicanSeatsNear50 = republicanCoordinates.stream()
+            .min(Comparator.comparingDouble(c -> Math.abs(c.getX() - .5)))
+            .get();
+        double bias = republicanSeatsNear50.getY() - republicanSeatsNear50.getX();
+
+        // calculate symmetry
+        List<Coordinate> republicanTemp = republicanCoordinates.stream()
+            .filter(c -> c.getX() >= .45 && c.getX() < .55)
+            .collect(Collectors.toList());
+        List<Coordinate> democratTemp = democratCoordinates.stream()
+            .filter(c -> c.getX() >= .45 && c.getX() < .55)
+            .collect(Collectors.toList());
+        
+        double symmetry = 0;
+        for (int j = 0; j < republicanTemp.size(); j++) {
+            symmetry += Math.abs(republicanTemp.get(j).getY() - democratTemp.get(j).getY());
+        }
+        symmetry /= republicanTemp.size();
+
+        // @TODO calculate responsiveness
+        Coordinate rLast = republicanTemp.get(republicanTemp.size()-1);
+        Coordinate rFirst = republicanTemp.get(0);
+        double averageRepublicanSlope = (rLast.getY() - rFirst.getY()) / (rLast.getX() - rFirst.getX());
+
+        Coordinate dLast = republicanTemp.get(republicanTemp.size()-1);
+        Coordinate dFirst = republicanTemp.get(0);
+        double averageDemocratSlope = (dLast.getY() - dFirst.getY()) / (dLast.getX() - dFirst.getX());
+
+        double responsiveness = (averageDemocratSlope + averageRepublicanSlope) / 2.0;
+
+        // @TODO POPULATE THIS OBJECT WITH DATA
+        seatShareData.setDemocratData(democratCoordinates);
+        seatShareData.setRepublicanData(republicanCoordinates);
+        seatShareData.setBiasAt50(bias);
+        seatShareData.setSymmetry(symmetry);
+        seatShareData.setResponsiveness(responsiveness);
+        return seatShareData;
     }
 
 }
