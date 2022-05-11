@@ -216,43 +216,13 @@ public class State {
      */
     public SeawulfSummary createSeawulfSummary() {
         // we need to reformat the data from the database into a more organized format
-        // first, box and whisker and majority minority becomes indexed by Political Group
-        // each political group contains the sorted list (increasing order) of box and whisker data
         Map<PoliticalGroup,List<BoxAndWhiskerData>> tempBoxAndWhiskerMap = 
-            new HashMap<PoliticalGroup, List<BoxAndWhiskerData>>();
+            this.createSeawulfBoxAndWhiskerMap();
+        
         Map<PoliticalGroup, Map<Integer, Integer>> tempMajorityMinorityRangeMap =
-            new HashMap<PoliticalGroup, Map<Integer, Integer>>();
-        for (PoliticalGroup group: PoliticalGroup.values()) {
-            // skip these metrics for total population
-            if (group == PoliticalGroup.TOTAL_POPULATION) {
-                continue;
-            }
-            // for each group, we filter out other groups, map the data to a manageable format,
-            // then sort the data in ascending order
-            List<BoxAndWhiskerData> tempList = this.getSeawulfBoxAndWhiskerMap().stream()
-                .filter(d -> d.getPoliticalGroup() == group)
-                .map(d -> new BoxAndWhiskerData(
-                    d.getLowerQuartile(),
-                    d.getMaximum(),
-                    d.getMedian(),
-                    d.getMinimum(),
-                    d.getUpperQuartile()
-                ))
-                .sorted(Comparator.comparingDouble(BoxAndWhiskerData::getMedian))
-                .collect(Collectors.toList());
-            tempBoxAndWhiskerMap.put(group, tempList);
-
-            // we can reuse this loop since majority minority range is also indexed by Political Group
-            // don't do these calculations for white demographic
-            if (group == PoliticalGroup.WHITE) {
-                continue;
-            }
-            // for each group, filter out other groups, and map data to manageable format
-            Map<Integer, Integer> tempMap = this.getSeawulfMajorityMinorityMap().stream()
-                .filter(d -> d.getPoliticalGroup() == group)
-                .collect(Collectors.toMap(d -> d.getNumMajorityMinorityDistricts(), d -> d.getCount()));
-            tempMajorityMinorityRangeMap.put(group, tempMap);
-        }
+            this.createSeawulfMajorityMinorityRange();
+        
+        
 
         // @TODO discuss best format for this data (along with @TODO in SeawulfSummary.java)
         // // next, we reformat republican democrat split data
@@ -261,6 +231,7 @@ public class State {
         //     .collect(Collectors.toMap(d -> d.getRepublicanSeats() + " " + d.getDemocratSeats(),d -> d.getCount()));
 
 
+        // @TODO seawulf seat share data calculate metrics
 
 
 
@@ -281,5 +252,57 @@ public class State {
         data.setSeawulfRepublicanDemocratSplit(this.seawulfRepublicanDemocratSplit);
         data.setSeawulfRepublicanSeatShareData(this.seawulfRepublicanSeatShareData);
         return data;
+    }
+
+    /**
+     * organizes database data into a more readable and sorted form for the frontend
+     * @return map of demographic group to its corresponding box and whisker data
+     */
+    public Map<PoliticalGroup,List<BoxAndWhiskerData>> createSeawulfBoxAndWhiskerMap() {
+        // first, box and whisker and majority minority becomes indexed by Political Group
+        // each political group contains the sorted list (increasing order) of box and whisker data
+        Map<PoliticalGroup,List<BoxAndWhiskerData>> tempBoxAndWhiskerMap = 
+            new HashMap<PoliticalGroup, List<BoxAndWhiskerData>>();
+        for (PoliticalGroup group: PoliticalGroup.values()) {
+            // skip these metrics for total population
+            if (group == PoliticalGroup.TOTAL_POPULATION) {
+                continue;
+            }
+            // for each group, we filter out other groups, map the data to a manageable format,
+            // then sort the data in ascending order
+            List<BoxAndWhiskerData> tempList = this.getSeawulfBoxAndWhiskerMap().stream()
+                .filter(d -> d.getPoliticalGroup() == group)
+                .map(d -> new BoxAndWhiskerData(
+                    d.getLowerQuartile(),
+                    d.getMaximum(),
+                    d.getMedian(),
+                    d.getMinimum(),
+                    d.getUpperQuartile()
+                ))
+                .sorted(Comparator.comparingDouble(BoxAndWhiskerData::getMedian))
+                .collect(Collectors.toList());
+            tempBoxAndWhiskerMap.put(group, tempList);
+        }
+        return tempBoxAndWhiskerMap;
+    }
+
+    public Map<PoliticalGroup, Map<Integer, Integer>> createSeawulfMajorityMinorityRange() {
+        Map<PoliticalGroup, Map<Integer, Integer>> tempMajorityMinorityRangeMap =
+            new HashMap<PoliticalGroup, Map<Integer, Integer>>();
+
+        for (PoliticalGroup group: PoliticalGroup.values()) {
+            // we can reuse this loop since majority minority range is also indexed by Political Group
+            // don't do these calculations for white demographic
+            if (group == PoliticalGroup.WHITE) {
+                continue;
+            }
+            // for each group, filter out other groups, and map data to manageable format
+            Map<Integer, Integer> tempMap = this.getSeawulfMajorityMinorityMap().stream()
+                .filter(d -> d.getPoliticalGroup() == group)
+                .collect(Collectors.toMap(d -> d.getNumMajorityMinorityDistricts(), d -> d.getCount()));
+            tempMajorityMinorityRangeMap.put(group, tempMap);
+        }
+
+        return tempMajorityMinorityRangeMap;
     }
 }

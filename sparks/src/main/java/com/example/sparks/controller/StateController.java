@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.example.sparks.entity.DistrictPlan;
 import com.example.sparks.entity.State;
+import com.example.sparks.nonentity.BoxAndWhiskerResponse;
 import com.example.sparks.nonentity.DistrictPlanMetrics;
 import com.example.sparks.nonentity.SeatShareData;
 import com.example.sparks.nonentity.SeawulfRawData;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller // This means that this class is a Controller
-@RequestMapping(path="/state") // This means URL's start with /state (after Application path)
+// @RequestMapping(path="/state") // This means URL's start with /state (after Application path)
 @CrossOrigin
 public class StateController {
     @Autowired // This means to get the bean called stateRepository
@@ -35,21 +36,21 @@ public class StateController {
     private StateRepository stateRepository;
 
     // @TODO unsure if we need these
-    @Autowired
-    private DistrictPlanRepository districtPlanRepository;
+    // @Autowired
+    // private DistrictPlanRepository districtPlanRepository;
 
-    @Autowired
-    private DistrictRepository districtRepository;
+    // @Autowired
+    // private DistrictRepository districtRepository;
 
-    @Autowired
-    private PrecinctRepository precinctRepository;
+    // @Autowired
+    // private PrecinctRepository precinctRepository;
 
     /**
      * "/state/{stateCode}"
      * @param stateCode two letter String representation of the requested state
      * @return StateSummary object with data to be displayed by the frontend GUI
      */
-    @GetMapping(path="/{stateCode}")
+    @GetMapping(path="/state/{stateCode}")
     public @ResponseBody StateSummary getStateByCode(@PathVariable String stateCode) {
         State state = stateRepository.findByStateCode(stateCode).get(0);
 
@@ -64,28 +65,16 @@ public class StateController {
         return summary;
     }
 
-    // @TODO: maybe returns geojson with statecode?
-    @GetMapping(path="/all")
-    public @ResponseBody Iterable<State> getAllStates() {
-        // This returns a JSON with the states
-        return stateRepository.findAll();
-    }
-
-
-    // @TODO: DISTRICT ENDPOINT
     // get seat share data using statecode and district plan id
     @GetMapping(path="/district/seat-share/{stateCode}/{districtPlanId}")
     public @ResponseBody SeatShareData getSeatShareData(@PathVariable Long districtPlanId, 
                                                         @PathVariable String stateCode) {
-        // List<State> states = stateRepository.findByStateCode(values.getFirst("stateCode"));
         State state = stateRepository.findByStateCode(stateCode).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
 
-        // return districtPlan.createSeatShare();
         return districtPlan.generateSeatShareData();
     }
 
-    // @TODO: DISTRICT ENDPOINT
     // get district stats by statecode and district plan id
     @GetMapping(path="/district/{stateCode}/{districtPlanId}")
     public @ResponseBody DistrictPlanMetrics getDistrictSummary(@PathVariable Long districtPlanId, 
@@ -95,6 +84,39 @@ public class StateController {
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
 
         return districtPlan.createMetrics();
+    }
+
+    // get box and whisker data needed
+    @GetMapping(path="/district/box-whisker/{stateCode}/{districtPlanId}")
+    public @ResponseBody BoxAndWhiskerResponse getBoxAndWhisker(@PathVariable String stateCode,
+                                                                @PathVariable Long districtPlanId) {
+        // @TODO
+        State state = stateRepository.findByStateCode(stateCode).get(0);
+        DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
+
+        BoxAndWhiskerResponse response = new BoxAndWhiskerResponse();
+        response.setDistrictData(districtPlan.generateBoxAndWhiskerData());
+        response.setBoxAndWhiskerData(state.createSeawulfBoxAndWhiskerMap());
+        return response;
+    }
+
+
+
+
+
+
+
+
+
+
+
+    // TESTING ENDPOINTS
+
+    // @TODO: maybe returns geojson with statecode?
+    @GetMapping(path="/state/all")
+    public @ResponseBody Iterable<State> getAllStates() {
+        // This returns a JSON with the states
+        return stateRepository.findAll();
     }
 
     // @TODO testing purposes only
@@ -153,7 +175,7 @@ public class StateController {
 
 
 
-    // FOR ADDING DATA
+    // @TODO FOR ADDING DATA
     @PostMapping(path="/add")
     public @ResponseBody String addState(@RequestBody @Validated State state) {
         // for (DistrictPlan districtPlan: state.getDistrictPlans()) {

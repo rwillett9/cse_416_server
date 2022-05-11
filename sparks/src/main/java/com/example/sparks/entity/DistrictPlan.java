@@ -294,36 +294,6 @@ public class DistrictPlan {
     }
 
     /**
-     * @return a DistrictPlanMetrics Object
-     */
-    public DistrictPlanMetrics createMetrics() {
-        DistrictPlanMetrics metrics = new DistrictPlanMetrics();
-        metrics.setCompactness(this.getCompactness());
-        metrics.setCompetitiveDistrictIds(this.getCompetitiveDistrictIds());
-        metrics.setDemocratDistrictIds(this.getDemocratDistrictIds());
-        metrics.setId(this.getId());
-        metrics.setMeanPopulationDeviation(this.getMeanPopulationDeviation());
-        // metrics.setNumMinorityMajorityDistricts(this.getNumMinorityMajorityDistricts());
-        metrics.setRepublicanDistrictIds(this.getRepublicanDistrictIds());
-        metrics.setName(this.getName());
-        return metrics;
-    }
-
-    /**
-     * @return a SeatShareData Object
-     */
-    public SeatShareData createSeatShare() {
-        SeatShareData seatShareData = new SeatShareData();
-        seatShareData.setBiasAt50(this.getSeatShareBiasAt50());
-        seatShareData.setDemocratData(this.getSeatShareDemocratData());
-        seatShareData.setRepublicanData(this.getSeatShareRepublicanData());
-        seatShareData.setResponsiveness(this.getSeatShareResponsiveness());
-        seatShareData.setSymmetry(this.getSeatShareSymmetry());
-        return seatShareData;
-    }
-
-
-    /**
      * @return Map<PoliticalGroup, Integer> return the minorityMajorityDistrictsMap
      */
     public Map<PoliticalGroup, Integer> getMinorityMajorityDistrictsMap() {
@@ -357,6 +327,21 @@ public class DistrictPlan {
      */
     public void setDistricts(List<District> districts) {
         this.districts = districts;
+    }
+
+    /**
+     * @return a DistrictPlanMetrics Object
+     */
+    public DistrictPlanMetrics createMetrics() {
+        DistrictPlanMetrics metrics = new DistrictPlanMetrics();
+        metrics.setCompactness(this.getCompactness());
+        metrics.setCompetitiveDistrictIds(this.getCompetitiveDistrictIds());
+        metrics.setDemocratDistrictIds(this.getDemocratDistrictIds());
+        metrics.setId(this.getId());
+        metrics.setMeanPopulationDeviation(this.getMeanPopulationDeviation());
+        metrics.setRepublicanDistrictIds(this.getRepublicanDistrictIds());
+        metrics.setName(this.getName());
+        return metrics;
     }
 
     /**
@@ -615,6 +600,32 @@ public class DistrictPlan {
         seatShareData.setSymmetry(symmetry);
         seatShareData.setResponsiveness(responsiveness);
         return seatShareData;
+    }
+
+    /**
+     * generates the box and whisker stats for this district plan
+     * @return sorted stats for each demographic group
+     */
+    public Map<PoliticalGroup, List<Integer>> generateBoxAndWhiskerData() {
+        // initialize return Object
+        Map<PoliticalGroup, List<Integer>> data = new HashMap<PoliticalGroup, List<Integer>>();
+        Integer[] temp;
+
+        // iterate over each demographic group except total population
+        for (PoliticalGroup group: PoliticalGroup.values()) {
+            if (group != PoliticalGroup.TOTAL_POPULATION) {
+                // get data for each district in this districting
+                temp = new Integer[this.districts.size()];
+                for (int i = 0; i < this.districts.size(); i++) {
+                    temp[i] = this.districts.get(i).getPopulationData(group);
+                }
+                // sort the data in ascending order
+                Arrays.sort(temp);
+                data.put(group, Arrays.asList(temp));
+            }
+        }
+
+        return data;
     }
 
 }
