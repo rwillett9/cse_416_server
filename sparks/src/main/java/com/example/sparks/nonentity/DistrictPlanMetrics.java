@@ -1,16 +1,16 @@
 package com.example.sparks.nonentity;
 
-import java.util.List;
+import java.util.Map;
+
+import com.example.sparks.enumerable.PoliticalGroup;
 
 public class DistrictPlanMetrics {
     private double compactness;
-    private List<Long> competitiveDistrictIds;
-    private List<Long> democratDistrictIds;
     private Long id;
     private String name;
-    private int numMinorityMajorityDistricts;
     private double meanPopulationDeviation;
-    private List<Long> republicanDistrictIds;
+    private Map<Long, PoliticalGroup> majorityMinorityDistrictsMap;
+    private Map<Long, PoliticalGroup> politicalLeaningMap;
 
     /**
      * @return double return the compactness
@@ -24,48 +24,6 @@ public class DistrictPlanMetrics {
      */
     public void setCompactness(double compactness) {
         this.compactness = compactness;
-    }
-
-    /**
-     * @return List<Long> return the competitiveDistrictIds
-     */
-    public List<Long> getCompetitiveDistrictIds() {
-        return competitiveDistrictIds;
-    }
-
-    /**
-     * @param competitiveDistrictIds the competitiveDistrictIds to set
-     */
-    public void setCompetitiveDistrictIds(List<Long> competitiveDistrictIds) {
-        this.competitiveDistrictIds = competitiveDistrictIds;
-    }
-
-    /**
-     * @return List<Long> return the democratDistrictIds
-     */
-    public List<Long> getDemocratDistrictIds() {
-        return democratDistrictIds;
-    }
-
-    /**
-     * @param democratDistrictIds the democratDistrictIds to set
-     */
-    public void setDemocratDistrictIds(List<Long> democratDistrictIds) {
-        this.democratDistrictIds = democratDistrictIds;
-    }
-
-    /**
-     * @return int return the numMinorityMajorityDistricts
-     */
-    public int getNumMinorityMajorityDistricts() {
-        return numMinorityMajorityDistricts;
-    }
-
-    /**
-     * @param numMinorityMajorityDistricts the numMinorityMajorityDistricts to set
-     */
-    public void setNumMinorityMajorityDistricts(int numMinorityMajorityDistricts) {
-        this.numMinorityMajorityDistricts = numMinorityMajorityDistricts;
     }
 
     /**
@@ -83,21 +41,6 @@ public class DistrictPlanMetrics {
     }
 
     /**
-     * @return List<Long> return the republicanDistrictIds
-     */
-    public List<Long> getRepublicanDistrictIds() {
-        return republicanDistrictIds;
-    }
-
-    /**
-     * @param republicanDistrictIds the republicanDistrictIds to set
-     */
-    public void setRepublicanDistrictIds(List<Long> republicanDistrictIds) {
-        this.republicanDistrictIds = republicanDistrictIds;
-    }
-
-
-    /**
      * @return String return the name
      */
     public String getName() {
@@ -110,7 +53,6 @@ public class DistrictPlanMetrics {
     public void setName(String name) {
         this.name = name;
     }
-
 
     /**
      * @return Long return the id
@@ -126,4 +68,31 @@ public class DistrictPlanMetrics {
         this.id = id;
     }
 
+    /**
+     * @return Map<Long, PoliticalGroup> return the majorityMinorityDistrictsMap
+     */
+    public Map<Long, PoliticalGroup> getMajorityMinorityDistrictsMap() {
+        return majorityMinorityDistrictsMap;
+    }
+
+    /**
+     * @param majorityMinorityDistrictsMap the majorityMinorityDistrictsMap to set
+     */
+    public void setMajorityMinorityDistrictsMap(Map<Long, PoliticalGroup> majorityMinorityDistrictsMap) {
+        this.majorityMinorityDistrictsMap = majorityMinorityDistrictsMap;
+    }
+
+    /**
+     * @return Map<Long, PoliticalGroup> return the politicalLeaningMap
+     */
+    public Map<Long, PoliticalGroup> getPoliticalLeaningMap() {
+        return politicalLeaningMap;
+    }
+
+    /**
+     * @param politicalLeaningMap the politicalLeaningMap to set
+     */
+    public void setPoliticalLeaningMap(Map<Long, PoliticalGroup> politicalLeaningMap) {
+        this.politicalLeaningMap = politicalLeaningMap;
+    }
 }

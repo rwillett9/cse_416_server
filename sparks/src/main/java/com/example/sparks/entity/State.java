@@ -23,6 +23,7 @@ import com.example.sparks.embeddable.MajorityMinorityMap;
 import com.example.sparks.embeddable.RepublicanDemocratSplit;
 import com.example.sparks.enumerable.PoliticalGroup;
 import com.example.sparks.nonentity.BoxAndWhiskerData;
+import com.example.sparks.nonentity.SeatShareData;
 import com.example.sparks.nonentity.SeawulfRawData;
 import com.example.sparks.nonentity.SeawulfSummary;
 
@@ -67,6 +68,10 @@ public class State {
     @CollectionTable(name = "seawulf_republican_seat_share", joinColumns = @JoinColumn(name = "state_id"))
     @Embedded
     private List<Coordinate> seawulfRepublicanSeatShareData;
+
+    private double seawulfSeatShareBiasAt50;
+    private double seawulfSeatShareResponsiveness;
+    private double seawulfSeatShareSymmetry;
     // @TODO figure out how other seat share metrics work for seawulf data
     // END SEAWULF DATA
 
@@ -200,6 +205,48 @@ public class State {
     }
 
     /**
+     * @return double return the seawulfSeatShareBiasAt50
+     */
+    public double getSeawulfSeatShareBiasAt50() {
+        return seawulfSeatShareBiasAt50;
+    }
+
+    /**
+     * @param seawulfSeatShareBiasAt50 the seawulfSeatShareBiasAt50 to set
+     */
+    public void setSeawulfSeatShareBiasAt50(double seawulfSeatShareBiasAt50) {
+        this.seawulfSeatShareBiasAt50 = seawulfSeatShareBiasAt50;
+    }
+
+    /**
+     * @return double return the seawulfSeatShareResponsiveness
+     */
+    public double getSeawulfSeatShareResponsiveness() {
+        return seawulfSeatShareResponsiveness;
+    }
+
+    /**
+     * @param seawulfSeatShareResponsiveness the seawulfSeatShareResponsiveness to set
+     */
+    public void setSeawulfSeatShareResponsiveness(double seawulfSeatShareResponsiveness) {
+        this.seawulfSeatShareResponsiveness = seawulfSeatShareResponsiveness;
+    }
+
+    /**
+     * @return double return the seawulfSeatShareSymmetry
+     */
+    public double getSeawulfSeatShareSymmetry() {
+        return seawulfSeatShareSymmetry;
+    }
+
+    /**
+     * @param seawulfSeatShareSymmetry the seawulfSeatShareSymmetry to set
+     */
+    public void setSeawulfSeatShareSymmetry(double seawulfSeatShareSymmetry) {
+        this.seawulfSeatShareSymmetry = seawulfSeatShareSymmetry;
+    }
+
+    /**
      * @param districtPlanId the id of the plan to retrieve
      * @return DistrictPlan with matching id if it exists, otherwise null
      */
@@ -216,31 +263,21 @@ public class State {
      */
     public SeawulfSummary createSeawulfSummary() {
         // we need to reformat the data from the database into a more organized format
-        Map<PoliticalGroup,List<BoxAndWhiskerData>> tempBoxAndWhiskerMap = 
-            this.createSeawulfBoxAndWhiskerMap();
-        
-        Map<PoliticalGroup, Map<Integer, Integer>> tempMajorityMinorityRangeMap =
-            this.createSeawulfMajorityMinorityRange();
-        
-        
+        SeawulfSummary summary = new SeawulfSummary();
+
+        summary.setBoxAndWhiskerData(this.createSeawulfBoxAndWhiskerMap());
+        summary.setMajorityMinorityRange(this.createSeawulfMajorityMinorityRange());
 
         // @TODO discuss best format for this data (along with @TODO in SeawulfSummary.java)
         // // next, we reformat republican democrat split data
         // // format is key="<repSeats> <demSeats>", value=count
         // Map<String, Integer> tempRepublicanDemocratSplitMap = this.getSeawulfRepublicanDemocratSplit().stream()
         //     .collect(Collectors.toMap(d -> d.getRepublicanSeats() + " " + d.getDemocratSeats(),d -> d.getCount()));
+        summary.setRepublicanDemocratSplit(this.seawulfRepublicanDemocratSplit);
 
+        // @TODO seat share data
+        summary.setSeatShareData(this.createSeawulfSeatShareData());
 
-        // @TODO seawulf seat share data calculate metrics
-
-
-
-
-        // populate summary object and return it
-        SeawulfSummary summary = new SeawulfSummary();
-        summary.setBoxAndWhiskerData(tempBoxAndWhiskerMap);
-        summary.setMajorityMinorityRange(tempMajorityMinorityRangeMap);
-        summary.setRepublicanDemocratSplit(this.getSeawulfRepublicanDemocratSplit());
         return summary;
     }
 
@@ -286,6 +323,10 @@ public class State {
         return tempBoxAndWhiskerMap;
     }
 
+    /**
+     * organizes majority minority range data into a readable format for the frontend to read
+     * @return map of political group to coordinate data
+     */
     public Map<PoliticalGroup, Map<Integer, Integer>> createSeawulfMajorityMinorityRange() {
         Map<PoliticalGroup, Map<Integer, Integer>> tempMajorityMinorityRangeMap =
             new HashMap<PoliticalGroup, Map<Integer, Integer>>();
@@ -304,5 +345,19 @@ public class State {
         }
 
         return tempMajorityMinorityRangeMap;
+    }
+
+    /**
+     * organizes seawulf seat share data into one SeatShareData Object
+     * @return SeatShareData Object
+     */
+    public SeatShareData createSeawulfSeatShareData() {
+        SeatShareData seatShareData = new SeatShareData();
+        seatShareData.setDemocratData(this.seawulfDemocratSeatShareData);
+        seatShareData.setRepublicanData(this.seawulfRepublicanSeatShareData);
+        seatShareData.setBiasAt50(this.seawulfSeatShareBiasAt50);
+        seatShareData.setResponsiveness(this.seawulfSeatShareResponsiveness);
+        seatShareData.setSymmetry(this.seawulfSeatShareSymmetry);
+        return seatShareData;
     }
 }

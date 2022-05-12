@@ -2,7 +2,6 @@ package com.example.sparks.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -35,15 +34,8 @@ public class DistrictPlan {
     @Column(name = "district_plan_id")
     private Long id;
 
+    // @TODO (preprocessing task probably)
     private double compactness;
-
-    @ElementCollection
-    @CollectionTable(name = "competitive_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
-    private List<Long> competitiveDistrictIds;
-
-    @ElementCollection
-    @CollectionTable(name = "democrat_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
-    private List<Long> democratDistrictIds;
 
     @OneToMany
     @JoinColumn(name = "district_plan_id")
@@ -51,19 +43,10 @@ public class DistrictPlan {
 
     private double efficiencyGap;
     private double fairness;
-    private double meanPopulationDeviation;
     private String name;
 
     // @TODO look into this
     private int numCompetitiveDistricts;
-
-    @ElementCollection
-    @CollectionTable(name = "minority_majority_district_count", joinColumns = @JoinColumn(name = "district_plan_id"))
-    private Map<PoliticalGroup, Integer> minorityMajorityDistrictsMap;
-
-    @ElementCollection
-    @CollectionTable(name = "republican_district_id", joinColumns = @JoinColumn(name = "district_plan_id"))
-    private List<Long> republicanDistrictIds;
 
     // START SEAT SHARE DATA
     @Embedded
@@ -135,20 +118,6 @@ public class DistrictPlan {
      */
     public void setFairness(double fairness) {
         this.fairness = fairness;
-    }
-
-    /**
-     * @return double return the meanPopulationDeviation
-     */
-    public double getMeanPopulationDeviation() {
-        return meanPopulationDeviation;
-    }
-
-    /**
-     * @param meanPopulationDeviation the meanPopulationDeviation to set
-     */
-    public void setMeanPopulationDeviation(double meanPopulationDeviation) {
-        this.meanPopulationDeviation = meanPopulationDeviation;
     }
 
     /**
@@ -249,64 +218,6 @@ public class DistrictPlan {
         this.seatShareResponsiveness = seatShareResponsiveness;
     }
 
-
-    /**
-     * @return List<Long> return the republicanDistrictIds
-     */
-    public List<Long> getRepublicanDistrictIds() {
-        return republicanDistrictIds;
-    }
-
-    /**
-     * @param republicanDistrictIds the republicanDistrictIds to set
-     */
-    public void setRepublicanDistrictIds(List<Long> republicanDistrictIds) {
-        this.republicanDistrictIds = republicanDistrictIds;
-    }
-
-
-    /**
-     * @return List<Long> return the competitiveDistrictIds
-     */
-    public List<Long> getCompetitiveDistrictIds() {
-        return competitiveDistrictIds;
-    }
-
-    /**
-     * @param competitiveDistrictIds the competitiveDistrictIds to set
-     */
-    public void setCompetitiveDistrictIds(List<Long> competitiveDistrictIds) {
-        this.competitiveDistrictIds = competitiveDistrictIds;
-    }
-
-    /**
-     * @return List<Long> return the democratDistrictIds
-     */
-    public List<Long> getDemocratDistrictIds() {
-        return democratDistrictIds;
-    }
-
-    /**
-     * @param democratDistrictIds the democratDistrictIds to set
-     */
-    public void setDemocratDistrictIds(List<Long> democratDistrictIds) {
-        this.democratDistrictIds = democratDistrictIds;
-    }
-
-    /**
-     * @return Map<PoliticalGroup, Integer> return the minorityMajorityDistrictsMap
-     */
-    public Map<PoliticalGroup, Integer> getMinorityMajorityDistrictsMap() {
-        return minorityMajorityDistrictsMap;
-    }
-
-    /**
-     * @param minorityMajorityDistrictsMap the minorityMajorityDistrictsMap to set
-     */
-    public void setMinorityMajorityDistrictsMap(Map<PoliticalGroup, Integer> minorityMajorityDistrictsMap) {
-        this.minorityMajorityDistrictsMap = minorityMajorityDistrictsMap;
-    }
-
     /**
      * @param seatShareResponsiveness the seatShareResponsiveness to set
      */
@@ -334,12 +245,11 @@ public class DistrictPlan {
      */
     public DistrictPlanMetrics createMetrics() {
         DistrictPlanMetrics metrics = new DistrictPlanMetrics();
-        metrics.setCompactness(this.getCompactness());
-        metrics.setCompetitiveDistrictIds(this.getCompetitiveDistrictIds());
-        metrics.setDemocratDistrictIds(this.getDemocratDistrictIds());
-        metrics.setId(this.getId());
-        metrics.setMeanPopulationDeviation(this.getMeanPopulationDeviation());
-        metrics.setRepublicanDistrictIds(this.getRepublicanDistrictIds());
+        metrics.setCompactness(this.compactness);
+        metrics.setId(this.id);
+        metrics.setMeanPopulationDeviation(this.generateMeanPopulationDeviation());
+        metrics.setMajorityMinorityDistrictsMap(this.generateMajorityMinorityDistrictMap());
+        metrics.setPoliticalLeaningMap(this.generatePoliticalLeaningMap());
         metrics.setName(this.getName());
         return metrics;
     }
@@ -628,4 +538,85 @@ public class DistrictPlan {
         return data;
     }
 
+    /**
+     * maps each district id to the demographic with the simple majority (not including democrat/republican)
+     * @return mapping of district id (Long) to demographic with the simple majority (PoliticalGroup)
+     */
+    public Map<Long, PoliticalGroup> generateMajorityMinorityDistrictMap() {
+        Map<Long, PoliticalGroup> resultMap = new HashMap<Long, PoliticalGroup>();
+        
+        // iterate over districts in this plan
+        for (District district: this.districts) {
+            int currentHighest = 0;
+            PoliticalGroup highestGroup = null;
+
+            // iterate over demographic groups
+            for (PoliticalGroup group: PoliticalGroup.values()) {
+                // skip total population, democrat, and republican
+                if (group == PoliticalGroup.TOTAL_POPULATION || group == PoliticalGroup.DEMOCRAT
+                || group == PoliticalGroup.REPUBLICAN) {
+                    continue;
+                }
+
+                // if this demographic is higher than previous highest, this is new simple majority
+                int groupPopulation = district.getPopulationData(group);
+                if (groupPopulation > currentHighest) {
+                    currentHighest = groupPopulation;
+                    highestGroup = group;
+                }
+            }
+
+            // save group with simple majority
+            resultMap.put(district.getId(), highestGroup);
+        }
+
+        return resultMap;
+    }
+
+    /**
+     * maps each district with their political leaning (maps to null if equal political leaning)
+     * @return mapping of district id (Long) to political group with simple majority (PoliticalGroup)
+     */
+    public Map<Long, PoliticalGroup> generatePoliticalLeaningMap() {
+        Map<Long, PoliticalGroup> resultMap = new HashMap<Long, PoliticalGroup>();
+
+        for (District district: this.districts) {
+            int democratPopulation = district.getPopulationData(PoliticalGroup.DEMOCRAT);
+            int republicanPopulation = district.getPopulationData(PoliticalGroup.REPUBLICAN);
+            if (democratPopulation > republicanPopulation) {
+                resultMap.put(district.getId(), PoliticalGroup.DEMOCRAT);
+            } else if (republicanPopulation > democratPopulation) {
+                resultMap.put(district.getId(), PoliticalGroup.REPUBLICAN);
+            } else {
+                resultMap.put(district.getId(), null);
+            }
+        }
+
+        return resultMap;
+    }
+
+    /**
+     * calculate the mean population deviation for this district plan
+     * @return mean population deviation
+     */
+    public double generateMeanPopulationDeviation() {
+        // first get average population of districts in this plan, and store total populations in array
+        double average = 0;
+        int[] totalPopulations = new int[this.districts.size()];
+        for (int i = 0; i < this.districts.size(); i++) {
+            int totalPopulation = this.districts.get(i).getPopulationData(PoliticalGroup.TOTAL_POPULATION);
+            totalPopulations[i] = totalPopulation;
+            average += totalPopulation;
+        }
+        average /= this.districts.size();
+
+        // find average deviation from the mean
+        double result = 0;
+        for (int population: totalPopulations) {
+            result += Math.abs(population - average);
+        }
+        result /= this.districts.size();
+
+        return result;
+    }
 }

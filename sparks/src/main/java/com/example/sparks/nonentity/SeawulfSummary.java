@@ -13,12 +13,12 @@ import com.example.sparks.enumerable.PoliticalGroup;
 public class SeawulfSummary {
     private Map<PoliticalGroup,List<BoxAndWhiskerData>> boxAndWhiskerData;
     private Map<PoliticalGroup, Map<Integer, Integer>> majorityMinorityRange;
-    
+
     // @TODO discuss this (along with @TODO in State.java)
     private List<RepublicanDemocratSplit> republicanDemocratSplit;
     // private Map<String, Integer> republicanDemocratSplit;
 
-    private List<SeatShareData> seatShareDataList;
+    private SeatShareData seatShareData;
 
     /**
      * @return Map<PoliticalGroup,List<BoxAndWhiskerData>> return the boxAndWhiskerData
@@ -32,20 +32,6 @@ public class SeawulfSummary {
      */
     public void setBoxAndWhiskerData(Map<PoliticalGroup,List<BoxAndWhiskerData>> boxAndWhiskerData) {
         this.boxAndWhiskerData = boxAndWhiskerData;
-    }
-
-    /**
-     * @return List<SeatShareData> return the seatShareDataList
-     */
-    public List<SeatShareData> getSeatShareDataList() {
-        return seatShareDataList;
-    }
-
-    /**
-     * @param seatShareDataList the seatShareDataList to set
-     */
-    public void setSeatShareDataList(List<SeatShareData> seatShareDataList) {
-        this.seatShareDataList = seatShareDataList;
     }
 
     /**
@@ -77,4 +63,17 @@ public class SeawulfSummary {
         this.republicanDemocratSplit = republicanDemocratSplit;
     }
 
+    /**
+     * @return SeatShareData return the seatShareData
+     */
+    public SeatShareData getSeatShareData() {
+        return seatShareData;
+    }
+
+    /**
+     * @param seatShareData the seatShareData to set
+     */
+    public void setSeatShareData(SeatShareData seatShareData) {
+        this.seatShareData = seatShareData;
+    }
 }
