@@ -1,8 +1,11 @@
 package com.example.sparks.entity;
 
 import java.util.List;
+import java.util.Map;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +22,11 @@ public class District {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "district_id")
     private Long id;
+
+    // population data for each district
+    @ElementCollection
+    @CollectionTable(name = "district_population_metrics", joinColumns = @JoinColumn(name = "district_id"))
+    private Map<PoliticalGroup, Integer> populationMetrics;
 
     // @TODO geojson for each district or 1 geojson with all districts?
 
@@ -58,13 +66,38 @@ public class District {
     }
 
     /**
+     * @return Map<PoliticalGroup, Integer> return the populationMetrics
+     */
+    public Map<PoliticalGroup, Integer> getPopulationMetrics() {
+        return populationMetrics;
+    }
+
+    /**
+     * @param populationMetrics the populationMetrics to set
+     */
+    public void setPopulationMetrics(Map<PoliticalGroup, Integer> populationMetrics) {
+        this.populationMetrics = populationMetrics;
+    }
+
+    /**
      * @param group demographic group to find population data for
-     * @return sum of demographic data over precincts in this district
+     * @return population of group in this district
      */
     public int getPopulationData(PoliticalGroup group) {
+        return this.populationMetrics.get(group);
+        // return this.precincts.stream()
+        //     .map(p -> p.getDemographicAndElectionData().get(group))
+        //     .reduce(0, (a, b) -> a + b);
+    }
+
+    /**
+     * generates population stats based on precincts in this district
+     * @param group demographic to find population of
+     * @return population of group in this district
+     */
+    public int generatePopulation(PoliticalGroup group) {
         return this.precincts.stream()
             .map(p -> p.getDemographicAndElectionData().get(group))
             .reduce(0, (a, b) -> a + b);
     }
-
 }

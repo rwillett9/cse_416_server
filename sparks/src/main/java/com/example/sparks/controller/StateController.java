@@ -1,10 +1,14 @@
 package com.example.sparks.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.example.sparks.entity.District;
 import com.example.sparks.entity.DistrictPlan;
 import com.example.sparks.entity.State;
+import com.example.sparks.enumerable.PoliticalGroup;
 import com.example.sparks.nonentity.BoxAndWhiskerResponse;
 import com.example.sparks.nonentity.DistrictPlanMetrics;
 import com.example.sparks.nonentity.SeatShareData;
@@ -23,8 +27,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller // This means that this class is a Controller
@@ -39,8 +43,8 @@ public class StateController {
     // @Autowired
     // private DistrictPlanRepository districtPlanRepository;
 
-    // @Autowired
-    // private DistrictRepository districtRepository;
+    @Autowired
+    private DistrictRepository districtRepository;
 
     // @Autowired
     // private PrecinctRepository precinctRepository;
@@ -98,6 +102,33 @@ public class StateController {
         response.setDistrictData(districtPlan.generateBoxAndWhiskerData());
         response.setBoxAndWhiskerData(state.createSeawulfBoxAndWhiskerMap());
         return response;
+    }
+
+
+
+
+
+
+    // @TODO
+    // update district population data
+    @PutMapping(path="/district/update")
+    public @ResponseBody String updateDistrictPopulationData() {
+        Iterable<State> allStates = stateRepository.findAll();
+
+        for (State state: allStates) {
+            for (DistrictPlan plan: state.getDistrictPlans()) {
+                for (District district: plan.getDistricts()) {
+                    Map<PoliticalGroup, Integer> populationMetrics = new HashMap<PoliticalGroup, Integer>();
+                    for(PoliticalGroup group: PoliticalGroup.values()) {
+                        populationMetrics.put(group, district.generatePopulation(group));
+                    }
+                    district.setPopulationMetrics(populationMetrics);
+                    districtRepository.save(district);
+                }
+            }
+        }
+
+        return "done";
     }
 
 
