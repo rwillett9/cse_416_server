@@ -24,7 +24,6 @@ import com.example.sparks.embeddable.RepublicanDemocratSplit;
 import com.example.sparks.enumerable.PoliticalGroup;
 import com.example.sparks.nonentity.BoxAndWhiskerData;
 import com.example.sparks.nonentity.SeatShareData;
-import com.example.sparks.nonentity.SeawulfRawData;
 import com.example.sparks.nonentity.SeawulfSummary;
 
 /**
@@ -70,7 +69,6 @@ public class State {
     private double seawulfSeatShareBiasAt50;
     private double seawulfSeatShareResponsiveness;
     private double seawulfSeatShareSymmetry;
-    // @TODO figure out how other seat share metrics work for seawulf data
     // END SEAWULF DATA
 
     private String stateCode;
@@ -248,31 +246,9 @@ public class State {
     public SeawulfSummary createSeawulfSummary() {
         // we need to reformat the data from the database into a more organized format
         SeawulfSummary summary = new SeawulfSummary();
-
-        summary.setBoxAndWhiskerData(this.createSeawulfBoxAndWhiskerMap());
         summary.setMajorityMinorityRange(this.createSeawulfMajorityMinorityRange());
-
-        // @TODO discuss best format for this data (along with @TODO in SeawulfSummary.java)
-        // // next, we reformat republican democrat split data
-        // // format is key="<repSeats> <demSeats>", value=count
-        // Map<String, Integer> tempRepublicanDemocratSplitMap = this.getSeawulfRepublicanDemocratSplit().stream()
-        //     .collect(Collectors.toMap(d -> d.getRepublicanSeats() + " " + d.getDemocratSeats(),d -> d.getCount()));
         summary.setRepublicanDemocratSplit(this.seawulfRepublicanDemocratSplit);
-
-        // @TODO seat share data
-        summary.setSeatShareData(this.createSeawulfSeatShareData());
-
         return summary;
-    }
-
-    public SeawulfRawData createSeawulfRawData() {
-        SeawulfRawData data = new SeawulfRawData();
-        data.setSeawulfBoxAndWhiskerMap(this.seawulfBoxAndWhiskerMap);
-        data.setSeawulfDemocratSeatShareData(this.seawulfDemocratSeatShareData);
-        data.setSeawulfMajorityMinorityMap(this.seawulfMajorityMinorityMap);
-        data.setSeawulfRepublicanDemocratSplit(this.seawulfRepublicanDemocratSplit);
-        data.setSeawulfRepublicanSeatShareData(this.seawulfRepublicanSeatShareData);
-        return data;
     }
 
     /**

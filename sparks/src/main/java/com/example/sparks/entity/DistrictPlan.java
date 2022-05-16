@@ -349,7 +349,6 @@ public class DistrictPlan {
         }
         symmetry /= republicanTemp.size();
 
-        // @TODO calculate responsiveness
         Coordinate rLast = republicanTemp.get(republicanTemp.size()-1);
         Coordinate rFirst = republicanTemp.get(0);
         double averageRepublicanSlope = (rLast.getY() - rFirst.getY()) / (rLast.getX() - rFirst.getX());
@@ -360,7 +359,6 @@ public class DistrictPlan {
 
         double responsiveness = (averageDemocratSlope + averageRepublicanSlope) / 2.0;
 
-        // @TODO POPULATE THIS OBJECT WITH DATA
         seatShareData.setDemocratData(democratCoordinates);
         seatShareData.setRepublicanData(republicanCoordinates);
         seatShareData.setBiasAt50(bias);
@@ -516,5 +514,28 @@ public class DistrictPlan {
         }
 
         return (double)(republicanWasted - democratWasted) / (double)totalVotes;
+    }
+
+    /**
+     * calculate number of districts where total minority population is greater than white population
+     * @return number of combined majority minority districts in this district plan
+     */
+    public int generateNumberCombinedMajorityMinorityDistricts() {
+        int total = 0;
+
+        for (District district: this.districts) {
+            int totalMinorityPopulation = 0;
+            for (PoliticalGroup group: PoliticalGroup.values()) {
+                if (group == PoliticalGroup.DEMOCRAT || group == PoliticalGroup.REPUBLICAN
+                || group == PoliticalGroup.TOTAL_POPULATION || group == PoliticalGroup.WHITE) {
+                    totalMinorityPopulation += district.getPopulationData(group);
+                }
+            }
+            if (totalMinorityPopulation > district.getPopulationData(PoliticalGroup.WHITE)) {
+                total++;
+            }
+        }
+
+        return total;
     }
 }

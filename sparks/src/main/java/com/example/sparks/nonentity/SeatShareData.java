@@ -1,36 +1,17 @@
 package com.example.sparks.nonentity;
 
 import java.util.List;
-// import org.springframework.data.util.Pair;
 
 import com.example.sparks.embeddable.Coordinate;
 
-// import javax.persistence.Entity;
-
-// @TODO: this might not need to be an Entity? only needed as a return value for endpoints
-// this data gets stored in district_plan table in mysql, don't need another table for this
 /**
  * For sending data to create the Seat Share Curve.
  * we require x and y values to plot for both democrats and republicans,
  * bias at 50%, responsiveness and symmetry
  */
-// @Entity
 public class SeatShareData {
-    // @Id
-    // @GeneratedValue(strategy=GenerationType.AUTO)
-    // @Column(name = "seat_share_data_id")
-    // private Long id;
-
     private double biasAt50;
-
-    // @Embedded
-    // @ElementCollection
-    // @CollectionTable(name = "democrat_data", joinColumns = @JoinColumn(name = "seat_share_data_id"))
     private List<Coordinate> democratData;
-
-    // @Embedded
-    // @ElementCollection
-    // @CollectionTable(name = "republican_data", joinColumns = @JoinColumn(name = "seat_share_data_id"))
     private List<Coordinate> republicanData;
 
     private double responsiveness;
@@ -105,5 +86,4 @@ public class SeatShareData {
     public void setSymmetry(double symmetry) {
         this.symmetry = symmetry;
     }
-
 }

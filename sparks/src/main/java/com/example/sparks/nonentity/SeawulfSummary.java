@@ -11,28 +11,8 @@ import com.example.sparks.enumerable.PoliticalGroup;
  * plans by the SeaWulf supercomputer
  */
 public class SeawulfSummary {
-    private Map<PoliticalGroup,List<BoxAndWhiskerData>> boxAndWhiskerData;
     private Map<PoliticalGroup, Map<Integer, Integer>> majorityMinorityRange;
-
-    // @TODO discuss this (along with @TODO in State.java)
     private List<RepublicanDemocratSplit> republicanDemocratSplit;
-    // private Map<String, Integer> republicanDemocratSplit;
-
-    private SeatShareData seatShareData;
-
-    /**
-     * @return Map<PoliticalGroup,List<BoxAndWhiskerData>> return the boxAndWhiskerData
-     */
-    public Map<PoliticalGroup,List<BoxAndWhiskerData>> getBoxAndWhiskerData() {
-        return boxAndWhiskerData;
-    }
-
-    /**
-     * @param boxAndWhiskerData the boxAndWhiskerData to set
-     */
-    public void setBoxAndWhiskerData(Map<PoliticalGroup,List<BoxAndWhiskerData>> boxAndWhiskerData) {
-        this.boxAndWhiskerData = boxAndWhiskerData;
-    }
 
     /**
      * @return Map<PoliticalGroup, Map<Integer, Integer>> return the majorityMinorityRange
@@ -61,19 +41,5 @@ public class SeawulfSummary {
      */
     public void setRepublicanDemocratSplit(List<RepublicanDemocratSplit> republicanDemocratSplit) {
         this.republicanDemocratSplit = republicanDemocratSplit;
-    }
-
-    /**
-     * @return SeatShareData return the seatShareData
-     */
-    public SeatShareData getSeatShareData() {
-        return seatShareData;
-    }
-
-    /**
-     * @param seatShareData the seatShareData to set
-     */
-    public void setSeatShareData(SeatShareData seatShareData) {
-        this.seatShareData = seatShareData;
     }
 }
