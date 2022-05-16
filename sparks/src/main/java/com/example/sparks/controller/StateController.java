@@ -175,8 +175,7 @@ public class StateController {
     public @ResponseBody JSONObject getDistrictPlanGeoJson(@PathVariable String stateCode,
     @PathVariable Long districtPlanId) {
         State state = stateRepository.findByStateCode(stateCode).get(0);
-        DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
-        String planName = districtPlan.getName();
+        String planName = state.getDistrictPlanById(districtPlanId).getName();
 
         JSONObject response = new JSONObject();
         try {
