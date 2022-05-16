@@ -83,10 +83,8 @@ public class StateController {
     @GetMapping(path="/district/{stateCode}/{districtPlanId}")
     public @ResponseBody DistrictPlanMetrics getDistrictSummary(@PathVariable Long districtPlanId, 
                                                                 @PathVariable String stateCode) {
-        // @TODO
         State state = stateRepository.findByStateCode(stateCode).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
-
         return districtPlan.createMetrics();
     }
 
@@ -94,13 +92,12 @@ public class StateController {
     @GetMapping(path="/district/box-whisker/{stateCode}/{districtPlanId}")
     public @ResponseBody BoxAndWhiskerResponse getBoxAndWhisker(@PathVariable String stateCode,
                                                                 @PathVariable Long districtPlanId) {
-        // @TODO
         State state = stateRepository.findByStateCode(stateCode).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
-
         BoxAndWhiskerResponse response = new BoxAndWhiskerResponse();
         response.setDistrictData(districtPlan.generateBoxAndWhiskerData());
         response.setBoxAndWhiskerData(state.createSeawulfBoxAndWhiskerMap());
+        response.calculateError();
         return response;
     }
 
@@ -109,7 +106,8 @@ public class StateController {
 
 
 
-    // @TODO
+
+
     // update district population data
     @PutMapping(path="/district/update")
     public @ResponseBody String updateDistrictPopulationData() {
@@ -130,6 +128,8 @@ public class StateController {
 
         return "done";
     }
+
+
 
 
 
@@ -178,7 +178,6 @@ public class StateController {
         State s = new State();
         s.setId(5L);
         s.setStateCode("NV");
-        s.setGeoJson("nevada_geojson.json");
         stateRepository.save(s);
 
         return s;

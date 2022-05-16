@@ -24,8 +24,6 @@ public class Precinct {
     @CollectionTable(name = "precinct_demographic_and_election_data", joinColumns = @JoinColumn(name = "precinct_id"))
     private Map<PoliticalGroup, Integer> demographicAndElectionData;
 
-    // @TODO geojson for each precinct or 1 geojson for all precincts?
-
     private String name;
 
     /**

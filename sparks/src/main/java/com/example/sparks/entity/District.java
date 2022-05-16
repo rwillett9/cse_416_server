@@ -28,8 +28,6 @@ public class District {
     @CollectionTable(name = "district_population_metrics", joinColumns = @JoinColumn(name = "district_id"))
     private Map<PoliticalGroup, Integer> populationMetrics;
 
-    // @TODO geojson for each district or 1 geojson with all districts?
-
     @ManyToMany
     @JoinTable(
         name = "precinct_district_map",

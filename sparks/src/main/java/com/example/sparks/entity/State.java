@@ -37,8 +37,6 @@ public class State {
     @Column(name = "state_id")
     private Long id;
 
-    private String geoJson;
-
     @OneToMany
     @JoinColumn(name = "state_id")
     private List<DistrictPlan> districtPlans;
@@ -89,20 +87,6 @@ public class State {
      */
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @return String return the geoJson
-     */
-    public String getGeoJson() {
-        return geoJson;
-    }
-
-    /**
-     * @param geoJson the geoJson to set
-     */
-    public void setGeoJson(String geoJson) {
-        this.geoJson = geoJson;
     }
 
     /**

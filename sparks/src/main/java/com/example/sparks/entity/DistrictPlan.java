@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,35 +31,13 @@ public class DistrictPlan {
     @Column(name = "district_plan_id")
     private Long id;
 
-    // @TODO (preprocessing task probably)
     private double compactness;
 
     @OneToMany
     @JoinColumn(name = "district_plan_id")
     private List<District> districts;
 
-    private double efficiencyGap;
-    private double fairness;
     private String name;
-
-    // @TODO look into this
-    private int numCompetitiveDistricts;
-
-    // START SEAT SHARE DATA
-    @Embedded
-    @ElementCollection
-    @CollectionTable(name = "seat_share_democrat_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
-    private List<Coordinate> seatShareDemocratData;
-
-    @Embedded
-    @ElementCollection
-    @CollectionTable(name = "seat_share_republican_coordinate", joinColumns = @JoinColumn(name = "district_plan_id"))
-    private List<Coordinate> seatShareRepublicanData;
-
-    private double seatShareBiasAt50;
-    private double seatShareSymmetry;
-    private double seatShareResponsiveness;
-    // END SEAT SHARE DATA
 
     /**
      * @return Long return the id
@@ -93,34 +68,6 @@ public class DistrictPlan {
     }
 
     /**
-     * @return double return the efficiencyGap
-     */
-    public double getEfficiencyGap() {
-        return efficiencyGap;
-    }
-
-    /**
-     * @param efficiencyGap the efficiencyGap to set
-     */
-    public void setEfficiencyGap(double efficiencyGap) {
-        this.efficiencyGap = efficiencyGap;
-    }
-
-    /**
-     * @return double return the fairness
-     */
-    public double getFairness() {
-        return fairness;
-    }
-
-    /**
-     * @param fairness the fairness to set
-     */
-    public void setFairness(double fairness) {
-        this.fairness = fairness;
-    }
-
-    /**
      * @return String return the name
      */
     public String getName() {
@@ -133,98 +80,6 @@ public class DistrictPlan {
     public void setName(String name) {
         this.name = name;
     }
-
-    /**
-     * @return int return the numCompetitiveDistricts
-     */
-    public int getNumCompetitiveDistricts() {
-        return numCompetitiveDistricts;
-    }
-
-    /**
-     * @param numCompetitiveDistricts the numCompetitiveDistricts to set
-     */
-    public void setNumCompetitiveDistricts(int numCompetitiveDistricts) {
-        this.numCompetitiveDistricts = numCompetitiveDistricts;
-    }
-
-    /**
-     * @return List<Coordinate> return the seatShareDemocratData
-     */
-    public List<Coordinate> getSeatShareDemocratData() {
-        return seatShareDemocratData;
-    }
-
-    /**
-     * @param seatShareDemocratData the seatShareDemocratData to set
-     */
-    public void setSeatShareDemocratData(List<Coordinate> seatShareDemocratData) {
-        this.seatShareDemocratData = seatShareDemocratData;
-    }
-
-    /**
-     * @return List<Coordinate> return the seatShareRepublicanData
-     */
-    public List<Coordinate> getSeatShareRepublicanData() {
-        return seatShareRepublicanData;
-    }
-
-    /**
-     * @param seatShareRepublicanData the seatShareRepublicanData to set
-     */
-    public void setSeatShareRepublicanData(List<Coordinate> seatShareRepublicanData) {
-        this.seatShareRepublicanData = seatShareRepublicanData;
-    }
-
-    /**
-     * @return double return the seatShareBiasAt50
-     */
-    public double getSeatShareBiasAt50() {
-        return seatShareBiasAt50;
-    }
-
-    /**
-     * @param seatShareBiasAt50 the seatShareBiasAt50 to set
-     */
-    public void setSeatShareBiasAt50(double seatShareBiasAt50) {
-        this.seatShareBiasAt50 = seatShareBiasAt50;
-    }
-
-    /**
-     * @return double return the seatShareSymmetry
-     */
-    public double getSeatShareSymmetry() {
-        return seatShareSymmetry;
-    }
-
-    /**
-     * @param seatShareSymmetry the seatShareSymmetry to set
-     */
-    public void setSeatShareSymmetry(double seatShareSymmetry) {
-        this.seatShareSymmetry = seatShareSymmetry;
-    }
-
-    /**
-     * @return double return the seatShareResponsiveness
-     */
-    public double getSeatShareResponsiveness() {
-        return seatShareResponsiveness;
-    }
-
-    /**
-     * @param seatShareResponsiveness the seatShareResponsiveness to set
-     */
-    public void setSeatShareResponsivness(double seatShareResponsiveness) {
-        this.seatShareResponsiveness = seatShareResponsiveness;
-    }
-
-    /**
-     * @param seatShareResponsiveness the seatShareResponsiveness to set
-     */
-    public void setSeatShareResponsiveness(double seatShareResponsiveness) {
-        this.seatShareResponsiveness = seatShareResponsiveness;
-    }
-
 
     /**
      * @return List<District> return the districts
@@ -246,7 +101,9 @@ public class DistrictPlan {
     public DistrictPlanMetrics createMetrics() {
         DistrictPlanMetrics metrics = new DistrictPlanMetrics();
         metrics.setCompactness(this.compactness);
+        metrics.setEfficiencyGap(this.generateEfficiencyGap());
         metrics.setId(this.id);
+        metrics.setIncumbentSafeDistricts(this.generateIncumbentSafeDistrictsMap());
         metrics.setMeanPopulationDeviation(this.generateMeanPopulationDeviation());
         metrics.setMajorityMinorityDistrictsMap(this.generateMajorityMinorityDistrictMap());
         metrics.setPoliticalLeaningMap(this.generatePoliticalLeaningMap());
@@ -618,5 +475,46 @@ public class DistrictPlan {
         result /= this.districts.size();
 
         return result;
+    }
+
+    /**
+     * figure out which districts are incumbent safe and return a list of their IDs
+     * @return list of IDs for incumbent safe districts
+     */
+    public List<Long> generateIncumbentSafeDistrictsMap() {
+        return this.districts.stream()
+            .filter(d -> Math.abs(
+                (d.getPopulationData(PoliticalGroup.DEMOCRAT) / d.getPopulationData(PoliticalGroup.TOTAL_POPULATION))
+                - (d.getPopulationData(PoliticalGroup.REPUBLICAN) / d.getPopulationData(PoliticalGroup.TOTAL_POPULATION)))
+                > .1)
+            .map(District::getId)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * calculate efficiency gap for this district plan
+     * @return percent of wasted votes in this district plan
+     */
+    public double generateEfficiencyGap() {
+        int republicanWasted = 0;
+        int democratWasted = 0;
+        int totalVotes = 0;
+
+        for (District district: this.districts) {
+            int republicanVotes = district.getPopulationData(PoliticalGroup.REPUBLICAN);
+            int democratVotes = district.getPopulationData(PoliticalGroup.DEMOCRAT);
+            totalVotes += republicanVotes + democratVotes;
+            // totalVotes += district.getPopulationData(PoliticalGroup.TOTAL_POPULATION);
+            int votesNeeded = ((republicanVotes + democratVotes) / 2) + 1;
+            if (republicanVotes > democratVotes) {
+                republicanWasted += republicanVotes - votesNeeded;
+                democratWasted += democratVotes;
+            } else {
+                republicanWasted += republicanVotes;
+                democratWasted += democratVotes - votesNeeded;
+            }
+        }
+
+        return (double)(republicanWasted - democratWasted) / (double)totalVotes;
     }
 }
