@@ -1,5 +1,8 @@
 package com.example.sparks.controller;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +21,9 @@ import com.example.sparks.nonentity.StateSummary;
 import com.example.sparks.repository.DistrictRepository;
 import com.example.sparks.repository.StateRepository;
 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -135,13 +141,73 @@ public class StateController {
                 }
             }
         }
-
         return "done";
     }
+
+    // get all state geojsons
+    @GetMapping(path="/state/geojson/all")
+    public @ResponseBody Map<String, JSONObject> getAllStateGeoJson() {
+        Map<String, JSONObject> stateCodeToGeoJsonMap = new HashMap<String, JSONObject>();
+        
+        JSONParser parser = new JSONParser();
+        Iterable<State> states = stateRepository.findAll();
+        for (State state: states) {
+            String stateCode = state.getStateCode();
+            try {
+                FileReader reader = new FileReader("./src/main/java/com/example/sparks/data/" + stateCode + "/state.json");
+                Object object = parser.parse(reader);
+                JSONObject geoJson = (JSONObject) object;
+                stateCodeToGeoJsonMap.put(stateCode, geoJson);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return stateCodeToGeoJsonMap;
+    }
+
+    // get geoJSON for specific district plan
+    @GetMapping(path="district/geojson/{stateCode}/{districtPlanId}")
+    public @ResponseBody JSONObject getDistrictPlanGeoJson(@PathVariable String stateCode,
+    @PathVariable Long districtPlanId) {
+        State state = stateRepository.findByStateCode(stateCode).get(0);
+        DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
+        String planName = districtPlan.getName();
+
+        JSONObject response = new JSONObject();
+        try {
+            JSONParser parser = new JSONParser();
+            FileReader reader = new FileReader("./src/main/java/com/example/sparks/data/" + stateCode + "/"
+            + planName + ".json");
+            Object object = parser.parse(reader);
+            response = (JSONObject) object;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+
+
+
 
     // @TODO
     @GetMapping(path="/district/test/{stateCode}/{districtPlanId}")
     public @ResponseBody DistrictPlan getDistrictPlanTest(@PathVariable String stateCode, @PathVariable Long districtPlanId) {
         return stateRepository.findByStateCode(stateCode).get(0).getDistrictPlanById(districtPlanId);
+    }
+
+    @GetMapping(path="/pwd")
+    public @ResponseBody String getPwd() {
+        return StateController.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     }
 }
