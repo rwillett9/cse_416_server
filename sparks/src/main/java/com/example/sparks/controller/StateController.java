@@ -65,12 +65,17 @@ public class StateController {
 
     // get seat share data using statecode and district plan id
     @GetMapping(path="/district/seat-share/{stateCode}/{districtPlanId}")
-    public @ResponseBody SeatShareData getSeatShareData(@PathVariable Long districtPlanId, 
+    public @ResponseBody Map<String,SeatShareData> getSeatShareData(@PathVariable Long districtPlanId, 
     @PathVariable String stateCode) {
         State state = stateRepository.findByStateCode(stateCode).get(0);
         DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
 
-        return districtPlan.generateSeatShareData();
+        Map<String,SeatShareData> response = new HashMap<String,SeatShareData>();
+        response.put("districtPlan", districtPlan.generateSeatShareData());
+        // @TODO
+        response.put("seawulfData", new SeatShareData());
+
+        return response;
     }
 
     // get district stats by statecode and district plan id

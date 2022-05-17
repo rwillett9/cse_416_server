@@ -6,6 +6,7 @@ public class BoxAndWhiskerData {
     private double median;
     private double minimum;
     private double upperQuartile;
+    private double mean;
 
     public BoxAndWhiskerData() {}
 
@@ -14,13 +15,15 @@ public class BoxAndWhiskerData {
         double maximum,
         double median,
         double minimum,
-        double upperQuartile
+        double upperQuartile,
+        double mean
     ) {
         this.lowerQuartile = lowerQuartile;
         this.maximum = maximum;
         this.median = median;
         this.minimum = minimum;
         this.upperQuartile = upperQuartile;
+        this.mean = mean;
     }
 
     /**
@@ -91,6 +94,21 @@ public class BoxAndWhiskerData {
      */
     public void setUpperQuartile(double upperQuartile) {
         this.upperQuartile = upperQuartile;
+    }
+
+
+    /**
+     * @return double return the mean
+     */
+    public double getMean() {
+        return mean;
+    }
+
+    /**
+     * @param mean the mean to set
+     */
+    public void setMean(double mean) {
+        this.mean = mean;
     }
 
 }

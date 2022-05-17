@@ -1,5 +1,6 @@
 package com.example.sparks.nonentity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,23 +57,27 @@ public class BoxAndWhiskerResponse {
      * calculates the mean squared error for the district data from the box and whisker mean
      */
     public void calculateError() {
+        // initalize error object
+        this.error = new HashMap<PoliticalGroup,Double>();
         // calculate error for each demographic
         for (PoliticalGroup group: PoliticalGroup.values()) {
             // skip total population demographic
-            if (group != PoliticalGroup.TOTAL_POPULATION) {
+            if (group == PoliticalGroup.TOTAL_POPULATION || group == PoliticalGroup.DEMOCRAT
+            || group == PoliticalGroup.REPUBLICAN) {
                 continue;
             }
 
-            // find the sum of the squares of the differences between district and box and whisker median
-            double error = 0;
+            // find the sum of the squares of the differences between district and box and whisker mean
+            double tempError = 0;
             for (int i = 0; i < this.districtData.get(group).size(); i++) {
-                double median = this.boxAndWhiskerData.get(group).get(i).getMedian();
-                double currDistrict = this.districtData.get(group).get(i);
-                error += Math.pow(median - currDistrict, 2);
+                double mean = this.boxAndWhiskerData.get(group).get(i).getMean();
+                double currDistrict = ((double)this.districtData.get(group).get(i))
+                    / ((double) this.districtData.get(PoliticalGroup.TOTAL_POPULATION).get(i));
+                tempError += Math.pow(mean - currDistrict, 2);
             }
 
             // store in error Object
-            this.error.put(group, error);
+            this.error.put(group, tempError);
         }
     }
 }

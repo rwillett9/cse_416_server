@@ -20,6 +20,7 @@ import javax.persistence.OneToMany;
 import com.example.sparks.embeddable.BoxAndWhiskerMap;
 import com.example.sparks.embeddable.CombinedMajorityMinorityMap;
 import com.example.sparks.embeddable.Coordinate;
+import com.example.sparks.embeddable.HistogramMap;
 import com.example.sparks.embeddable.MajorityMinorityMap;
 import com.example.sparks.embeddable.RepublicanDemocratSplit;
 import com.example.sparks.enumerable.PoliticalGroup;
@@ -61,6 +62,16 @@ public class State {
     @CollectionTable(name = "seawulf_republican_democrat_split", joinColumns = @JoinColumn(name = "state_id"))
     @Embedded
     private List<RepublicanDemocratSplit> seawulfRepublicanDemocratSplit;
+
+    @ElementCollection
+    @CollectionTable(name = "seawulf_compactness", joinColumns = @JoinColumn(name = "state_id"))
+    @Embedded
+    private List<HistogramMap> seawulfCompactnessData;
+
+    @ElementCollection
+    @CollectionTable(name = "seawulf_efficiency_gap", joinColumns = @JoinColumn(name = "state_id"))
+    @Embedded
+    private List<HistogramMap> seawulfEfficiencyGapData;
 
     @ElementCollection
     @CollectionTable(name = "seawulf_democrat_seat_share", joinColumns = @JoinColumn(name = "state_id"))
@@ -249,6 +260,34 @@ public class State {
     }
 
     /**
+     * @return List<HistogramMap> return the seawulfCompactnessData
+     */
+    public List<HistogramMap> getSeawulfCompactnessData() {
+        return seawulfCompactnessData;
+    }
+
+    /**
+     * @param seawulfCompactnessData the seawulfCompactnessData to set
+     */
+    public void setSeawulfCompactnessData(List<HistogramMap> seawulfCompactnessData) {
+        this.seawulfCompactnessData = seawulfCompactnessData;
+    }
+
+    /**
+     * @return List<HistogramMap> return the seawulfEfficiencyGapData
+     */
+    public List<HistogramMap> getSeawulfEfficiencyGapData() {
+        return seawulfEfficiencyGapData;
+    }
+
+    /**
+     * @param seawulfEfficiencyGapData the seawulfEfficiencyGapData to set
+     */
+    public void setSeawulfEfficiencyGapData(List<HistogramMap> seawulfEfficiencyGapData) {
+        this.seawulfEfficiencyGapData = seawulfEfficiencyGapData;
+    }
+
+    /**
      * @param districtPlanId the id of the plan to retrieve
      * @return DistrictPlan with matching id if it exists, otherwise null
      */
@@ -267,8 +306,10 @@ public class State {
         // we need to reformat the data from the database into a more organized format
         SeawulfSummary summary = new SeawulfSummary();
         summary.setMajorityMinorityRange(this.createSeawulfMajorityMinorityRange());
-        summary.setRepublicanDemocratSplit(this.seawulfRepublicanDemocratSplit);
-        summary.setCombinedMajorityMinorityMap(this.seawulfCombinedMajorityMinorityMap);
+        summary.setRepublicanDemocratSplit(this.createSeawulfRepublicanDemocratSplit());
+        summary.setCombinedMajorityMinorityMap(this.createSeawulfCombinedMajorityMinorityMap());
+        summary.setCompactnessData(this.createSeawulfCompactnessMap());
+        summary.setEfficiencyGapData(this.createSeawulfEfficiencyGapMap());
         return summary;
     }
 
@@ -295,7 +336,8 @@ public class State {
                     d.getMaximum(),
                     d.getMedian(),
                     d.getMinimum(),
-                    d.getUpperQuartile()
+                    d.getUpperQuartile(),
+                    d.getMean()
                 ))
                 .sorted(Comparator.comparingDouble(BoxAndWhiskerData::getMedian))
                 .collect(Collectors.toList());
@@ -340,5 +382,43 @@ public class State {
         seatShareData.setResponsiveness(this.seawulfSeatShareResponsiveness);
         seatShareData.setSymmetry(this.seawulfSeatShareSymmetry);
         return seatShareData;
+    }
+
+
+    /**
+     * organizes seawulf republican democrat split histogram data
+     * @return List of RepublicanDemocratSplits
+     */
+    public List<RepublicanDemocratSplit> createSeawulfRepublicanDemocratSplit() {
+        this.seawulfRepublicanDemocratSplit.sort(Comparator.comparing(RepublicanDemocratSplit::getRepublicanSeats));
+        return this.seawulfRepublicanDemocratSplit;
+    }
+
+    /**
+     * sorts combined majority minority histogram data and returns it
+     * @return List of CombinedMajorityMinorityMaps
+     */
+    public List<CombinedMajorityMinorityMap> createSeawulfCombinedMajorityMinorityMap() {
+        this.seawulfCombinedMajorityMinorityMap.sort(
+            Comparator.comparing(CombinedMajorityMinorityMap::getNumCombinedMajorityMinorityDistricts));
+        return this.seawulfCombinedMajorityMinorityMap;
+    }
+
+    /**
+     * sorts seawulf compactness histogram data and returns it
+     * @return List of HistogramMaps
+     */
+    public List<HistogramMap> createSeawulfCompactnessMap() {
+        this.seawulfCompactnessData.sort(Comparator.comparing(HistogramMap::getRangeMinimum));
+        return this.seawulfCompactnessData;
+    }
+
+    /**
+     * sorts seawulf efficiency gap histogram data and returns it
+     * @return List of HistogramMaps
+     */
+    public List<HistogramMap> createSeawulfEfficiencyGapMap() {
+        this.seawulfEfficiencyGapData.sort(Comparator.comparing(HistogramMap::getRangeMinimum));
+        return this.seawulfEfficiencyGapData;
     }
 }

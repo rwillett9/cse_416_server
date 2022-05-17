@@ -378,7 +378,8 @@ public class DistrictPlan {
 
         // iterate over each demographic group except total population
         for (PoliticalGroup group: PoliticalGroup.values()) {
-            if (group != PoliticalGroup.TOTAL_POPULATION) {
+            if (group != PoliticalGroup.TOTAL_POPULATION || group != PoliticalGroup.DEMOCRAT
+            || group != PoliticalGroup.REPUBLICAN) {
                 // get data for each district in this districting
                 temp = new Integer[this.districts.size()];
                 for (int i = 0; i < this.districts.size(); i++) {
