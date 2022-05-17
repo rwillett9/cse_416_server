@@ -8,7 +8,7 @@ import com.example.sparks.enumerable.PoliticalGroup;
 
 public class BoxAndWhiskerResponse {
     private Map<PoliticalGroup,List<BoxAndWhiskerData>> boxAndWhiskerData;
-    private Map<PoliticalGroup,List<Integer>> districtData;
+    private Map<PoliticalGroup,List<Double>> districtData;
     private Map<PoliticalGroup,Double> error;
 
     /**
@@ -26,20 +26,6 @@ public class BoxAndWhiskerResponse {
     }
 
     /**
-     * @return Map<PoliticalGroup,List<Integer>> return the districtData
-     */
-    public Map<PoliticalGroup,List<Integer>> getDistrictData() {
-        return districtData;
-    }
-
-    /**
-     * @param districtData the districtData to set
-     */
-    public void setDistrictData(Map<PoliticalGroup,List<Integer>> districtData) {
-        this.districtData = districtData;
-    }
-
-    /**
      * @return Map<PoliticalGroup,Double> return the error
      */
     public Map<PoliticalGroup,Double> getError() {
@@ -51,6 +37,20 @@ public class BoxAndWhiskerResponse {
      */
     public void setError(Map<PoliticalGroup,Double> error) {
         this.error = error;
+    }
+
+    /**
+     * @return Map<PoliticalGroup,List<Double>> return the districtData
+     */
+    public Map<PoliticalGroup,List<Double>> getDistrictData() {
+        return districtData;
+    }
+
+    /**
+     * @param districtData the districtData to set
+     */
+    public void setDistrictData(Map<PoliticalGroup,List<Double>> districtData) {
+        this.districtData = districtData;
     }
 
     /**

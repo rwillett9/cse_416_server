@@ -371,19 +371,20 @@ public class DistrictPlan {
      * generates the box and whisker stats for this district plan
      * @return sorted stats for each demographic group
      */
-    public Map<PoliticalGroup, List<Integer>> generateBoxAndWhiskerData() {
+    public Map<PoliticalGroup, List<Double>> generateBoxAndWhiskerData() {
         // initialize return Object
-        Map<PoliticalGroup, List<Integer>> data = new HashMap<PoliticalGroup, List<Integer>>();
-        Integer[] temp;
+        Map<PoliticalGroup, List<Double>> data = new HashMap<PoliticalGroup, List<Double>>();
+        Double[] temp;
 
         // iterate over each demographic group except total population
         for (PoliticalGroup group: PoliticalGroup.values()) {
             if (group != PoliticalGroup.TOTAL_POPULATION || group != PoliticalGroup.DEMOCRAT
             || group != PoliticalGroup.REPUBLICAN) {
                 // get data for each district in this districting
-                temp = new Integer[this.districts.size()];
+                temp = new Double[this.districts.size()];
                 for (int i = 0; i < this.districts.size(); i++) {
-                    temp[i] = this.districts.get(i).getPopulationData(group);
+                    temp[i] = ((double)this.districts.get(i).getPopulationData(group))
+                        / ((double)this.districts.get(i).getPopulationData(PoliticalGroup.TOTAL_POPULATION));
                 }
                 // sort the data in ascending order
                 Arrays.sort(temp);
