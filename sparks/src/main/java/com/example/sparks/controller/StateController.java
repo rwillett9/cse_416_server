@@ -73,7 +73,7 @@ public class StateController {
         Map<String,SeatShareData> response = new HashMap<String,SeatShareData>();
         response.put("districtPlan", districtPlan.generateSeatShareData());
         // @TODO
-        response.put("seawulfData", new SeatShareData());
+        response.put("seawulfData", state.createSeawulfSeatShareData());
 
         return response;
     }

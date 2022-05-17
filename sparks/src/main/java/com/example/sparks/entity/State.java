@@ -384,7 +384,6 @@ public class State {
         return seatShareData;
     }
 
-
     /**
      * organizes seawulf republican democrat split histogram data
      * @return List of RepublicanDemocratSplits

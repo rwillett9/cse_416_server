@@ -333,7 +333,10 @@ public class DistrictPlan {
         Coordinate republicanSeatsNear50 = republicanCoordinates.stream()
             .min(Comparator.comparingDouble(c -> Math.abs(c.getX() - .5)))
             .get();
-        double bias = republicanSeatsNear50.getY() - republicanSeatsNear50.getX();
+        Coordinate democratSeatsNear50 = democratCoordinates.stream()
+            .min(Comparator.comparingDouble(c -> Math.abs(c.getX() - .5)))
+            .get();
+        double bias = republicanSeatsNear50.getY() - democratSeatsNear50.getY();
 
         // calculate symmetry
         List<Coordinate> republicanTemp = republicanCoordinates.stream()
