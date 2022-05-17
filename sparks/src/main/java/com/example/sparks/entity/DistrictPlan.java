@@ -105,8 +105,17 @@ public class DistrictPlan {
         metrics.setId(this.id);
         metrics.setIncumbentSafeDistricts(this.generateIncumbentSafeDistrictsMap());
         metrics.setMeanPopulationDeviation(this.generateMeanPopulationDeviation());
-        metrics.setMajorityMinorityDistrictsMap(this.generateMajorityMinorityDistrictMap());
-        metrics.setPoliticalLeaningMap(this.generatePoliticalLeaningMap());
+        Map<Long, PoliticalGroup> majorityMinorityDistrictMap = this.generateMajorityMinorityDistrictMap();
+        Map<Long, PoliticalGroup> politicalLeaningMap = this.generatePoliticalLeaningMap();
+        metrics.setMajorityMinorityDistrictsMap(majorityMinorityDistrictMap);
+        metrics.setPoliticalLeaningMap(politicalLeaningMap);
+        // @TODO
+        metrics.setNumDemocratDistricts((int)politicalLeaningMap.entrySet().stream()
+            .filter(d -> d.getValue() == PoliticalGroup.DEMOCRAT).count());
+        metrics.setNumMajorityMinorityDistricts((int)majorityMinorityDistrictMap.entrySet().stream()
+            .filter(d -> d.getValue() != PoliticalGroup.WHITE).count());
+        metrics.setNumRepublicanDistricts((int)politicalLeaningMap.entrySet().stream()
+            .filter(d -> d.getValue() == PoliticalGroup.REPUBLICAN).count());
         metrics.setName(this.getName());
         return metrics;
     }

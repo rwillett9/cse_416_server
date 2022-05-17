@@ -13,6 +13,9 @@ public class DistrictPlanMetrics {
     private String name;
     private double meanPopulationDeviation;
     private Map<Long, PoliticalGroup> majorityMinorityDistrictsMap;
+    private int numDemocratDistricts;
+    private int numMajorityMinorityDistricts;
+    private int numRepublicanDistricts;
     private Map<Long, PoliticalGroup> politicalLeaningMap;
 
     /**
@@ -126,4 +129,47 @@ public class DistrictPlanMetrics {
     public void setEfficiencyGap(double efficiencyGap) {
         this.efficiencyGap = efficiencyGap;
     }
+
+    /**
+     * @return int return the numDemocratDistricts
+     */
+    public int getNumDemocratDistricts() {
+        return numDemocratDistricts;
+    }
+
+    /**
+     * @param numDemocratDistricts the numDemocratDistricts to set
+     */
+    public void setNumDemocratDistricts(int numDemocratDistricts) {
+        this.numDemocratDistricts = numDemocratDistricts;
+    }
+
+    /**
+     * @return int return the numMajorityMinorityDistricts
+     */
+    public int getNumMajorityMinorityDistricts() {
+        return numMajorityMinorityDistricts;
+    }
+
+    /**
+     * @param numMajorityMinorityDistricts the numMajorityMinorityDistricts to set
+     */
+    public void setNumMajorityMinorityDistricts(int numMajorityMinorityDistricts) {
+        this.numMajorityMinorityDistricts = numMajorityMinorityDistricts;
+    }
+
+    /**
+     * @return int return the numRepublicanDistricts
+     */
+    public int getNumRepublicanDistricts() {
+        return numRepublicanDistricts;
+    }
+
+    /**
+     * @param numRepublicanDistricts the numRepublicanDistricts to set
+     */
+    public void setNumRepublicanDistricts(int numRepublicanDistricts) {
+        this.numRepublicanDistricts = numRepublicanDistricts;
+    }
+
 }
