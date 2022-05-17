@@ -12,6 +12,7 @@ public class BoxAndWhiskerMap {
     private double median;
     private double upperQuartile;
     private double maximum;
+    private double mean;
 
     /**
      * @return PoliticalGroup return the politicalGroup
@@ -98,4 +99,17 @@ public class BoxAndWhiskerMap {
         this.maximum = maximum;
     }
 
+    /**
+     * @return double return the mean
+     */
+    public double getMean() {
+        return mean;
+    }
+
+    /**
+     * @param mean the mean to set
+     */
+    public void setMean(double mean) {
+        this.mean = mean;
+    }
 }

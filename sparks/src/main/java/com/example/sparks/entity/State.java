@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import com.example.sparks.embeddable.BoxAndWhiskerMap;
+import com.example.sparks.embeddable.CombinedMajorityMinorityMap;
 import com.example.sparks.embeddable.Coordinate;
 import com.example.sparks.embeddable.MajorityMinorityMap;
 import com.example.sparks.embeddable.RepublicanDemocratSplit;
@@ -45,6 +46,11 @@ public class State {
     @CollectionTable(name = "seawulf_box_and_whisker_data", joinColumns = @JoinColumn(name = "state_id"))
     @Embedded
     private List<BoxAndWhiskerMap> seawulfBoxAndWhiskerMap;
+
+    @ElementCollection
+    @CollectionTable(name = "seawulf_combined_majority_minority", joinColumns = @JoinColumn(name = "state_id"))
+    @Embedded
+    private List<CombinedMajorityMinorityMap> seawulfCombinedMajorityMinorityMap;
 
     @ElementCollection
     @CollectionTable(name = "seawulf_majority_minority", joinColumns = @JoinColumn(name = "state_id"))
@@ -229,6 +235,20 @@ public class State {
     }
 
     /**
+     * @return List<CombinedMajorityMinorityMap> return the seawulfCombinedMajorityMinorityMap
+     */
+    public List<CombinedMajorityMinorityMap> getSeawulfCombinedMajorityMinorityMap() {
+        return seawulfCombinedMajorityMinorityMap;
+    }
+
+    /**
+     * @param seawulfCombinedMajorityMinorityMap the seawulfCombinedMajorityMinorityMap to set
+     */
+    public void setSeawulfCombinedMajorityMinorityMap(List<CombinedMajorityMinorityMap> seawulfCombinedMajorityMinorityMap) {
+        this.seawulfCombinedMajorityMinorityMap = seawulfCombinedMajorityMinorityMap;
+    }
+
+    /**
      * @param districtPlanId the id of the plan to retrieve
      * @return DistrictPlan with matching id if it exists, otherwise null
      */
@@ -248,6 +268,7 @@ public class State {
         SeawulfSummary summary = new SeawulfSummary();
         summary.setMajorityMinorityRange(this.createSeawulfMajorityMinorityRange());
         summary.setRepublicanDemocratSplit(this.seawulfRepublicanDemocratSplit);
+        summary.setCombinedMajorityMinorityMap(this.seawulfCombinedMajorityMinorityMap);
         return summary;
     }
 

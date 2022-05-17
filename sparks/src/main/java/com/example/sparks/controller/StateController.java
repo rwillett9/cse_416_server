@@ -195,6 +195,25 @@ public class StateController {
         return response;
     }
 
+    // get district level population metrics for a district plan
+    @GetMapping(path="district/population-metrics/{stateCode}/{districtPlanId}")
+    public @ResponseBody List<Map<PoliticalGroup, Integer>> getDistrictPopulationMetrics(@PathVariable String stateCode,
+    @PathVariable Long districtPlanId) {
+        State state = stateRepository.findByStateCode(stateCode).get(0);
+        DistrictPlan districtPlan = state.getDistrictPlanById(districtPlanId);
+        List<Map<PoliticalGroup,Integer>> response = new ArrayList<Map<PoliticalGroup,Integer>>();
+
+        for (District district: districtPlan.getDistricts()) {
+            Map<PoliticalGroup,Integer> tempPopulationMap = new HashMap<PoliticalGroup,Integer>();
+            for (PoliticalGroup group: PoliticalGroup.values()) {
+                tempPopulationMap.put(group, district.getPopulationData(group));
+            }
+            response.add(tempPopulationMap);
+        }
+
+        return response;
+    }
+
 
 
 
